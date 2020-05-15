@@ -15,7 +15,10 @@ with open(path.join(this_directory, 'requirements.txt'), encoding='utf-8') as r:
 
 setup(
     name='azbacklog',
-    version='1.0.0',
+    author="Joshua Davis",
+    author_email="me@jdav.is",
+    url='https://github.com/Azure/Azure-Backlog-Generator',
+    version='0.0.1',
     description='The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on proven practices. The backlogs can be generated in either Azure DevOps or GitHub.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -27,5 +30,6 @@ setup(
     extras_require={
         'dev': requirements
     },
-    scripts=['src/scripts/main.py']
+    scripts=['src/scripts/main.py'],
+    python_requires='>=3.6'
 )

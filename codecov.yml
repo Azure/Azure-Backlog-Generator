@@ -1,11 +1,11 @@
 codecov:
-  token: secret:8WmEPiq9RctAoDGEtQ+4PGyfeWp4wSKvB/aboE9JQ8APJM+Lup1SxpFZsrZSND9iKunCnY+OoWPtP09gtDCzwODOnmPwpiJEyX2v/j9mmxs=
+  token: 33177989-0bbc-4dfb-8310-90d00b97c75a
   bot: "codecov-io"
 coverage:
   status:
     project:
       default:
-        target: 80%
+        target: 95%
         threshold: 0%
         base: auto 
         flags: 

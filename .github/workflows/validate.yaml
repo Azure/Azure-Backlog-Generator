@@ -49,8 +49,7 @@ jobs:
           path: report.txt
       - name: Codecov
         run: |
-          pip install codecov
-          codecov
+           bash <(curl -s https://codecov.io/bash)
       - name: Validate Backlog Configurations and Work Items
         run: |
           chmod 755 ./validate.sh

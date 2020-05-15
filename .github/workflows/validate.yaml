@@ -48,12 +48,12 @@ jobs:
       - name: Upload Coverage Reports (html)
         uses: actions/upload-artifact@v1
         with:
-          name: coverage-report-${{ matrix.python-version }}
+          name: coverage-report-${{ matrix.python-version }}-html
           path: htmlcov
       - name: Upload Coverage Reports (txt)
         uses: actions/upload-artifact@v1
         with:
-          name: coverage-report-${{ matrix.python-version }}
+          name: coverage-report-${{ matrix.python-version }}-txt
           path: report.txt
       - name: Validate Backlog Configurations and Work Items
         run: |

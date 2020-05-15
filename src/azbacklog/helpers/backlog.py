@@ -144,6 +144,4 @@ class Backlog():
         files = self._gatherWorkItems(path)
         config = self._getConfig(path)
         parsedFiles = self._parseWorkItems(files)
-        workItems = self._buildWorkItems(parsedFiles, config)
-
-        
+        workItems = self._buildWorkItems(parsedFiles, config)       

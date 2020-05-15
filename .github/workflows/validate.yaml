@@ -47,6 +47,10 @@ jobs:
         with:
           name: coverage-report-${{ matrix.python-version }}-txt
           path: report.txt
+      - name: Codecov
+        run: |
+          pip install codecov
+          codecov
       - name: Validate Backlog Configurations and Work Items
         run: |
           chmod 755 ./validate.sh

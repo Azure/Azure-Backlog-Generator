@@ -15,4 +15,4 @@ jobs:
         run: |
           pip install --upgrade setuptools wheel twine
           python setup.py sdist bdist_wheel
-          python -m twine upload -u __token__ -p ${{ secret.PyPl_Token }} dist/*
+          python -m twine upload -u __token__ -p ${{ secrets.PyPl_Token }} dist/*

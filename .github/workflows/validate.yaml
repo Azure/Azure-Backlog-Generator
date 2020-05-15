@@ -30,18 +30,31 @@ jobs:
         run: |
           coverage run -m pytest --junitxml=junit/test-results-${{ matrix.python-version }}.xml
           coverage html
-          coverage xml
+          coverage report -m > report.txt
+      - name: Upload Coverage Reports to Code Climate
+        uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: 30e44f612275903104f237611691d9d44c6dc8a0a784dc05596e0243bfe84836
+        with:
+          coverageCommand: coverage xml
+          coverageLocations: |
+            coverage.xml:coverage.py
       - name: Upload pytest Test Results
         uses: actions/upload-artifact@v1
         with:
           name: pytest-results-${{ matrix.python-version }}
           path: junit/test-results-${{ matrix.python-version }}.xml
         if: ${{ always() }}
-      - name: Upload Coverage Reports
+      - name: Upload Coverage Reports (html)
         uses: actions/upload-artifact@v1
         with:
           name: coverage-report-${{ matrix.python-version }}
           path: htmlcov
+      - name: Upload Coverage Reports (txt)
+        uses: actions/upload-artifact@v1
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: report.txt
       - name: Validate Backlog Configurations and Work Items
         run: |
           chmod 755 ./validate.sh

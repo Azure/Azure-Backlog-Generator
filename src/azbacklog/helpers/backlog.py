@@ -1,15 +1,16 @@
-import json
 from .filesystem import FileSystem
 from .parser import Parser
 from .validation import Validation
 from .. import entities
+from .. import services
+
 
 class Backlog():
 
     def _gatherWorkItems(self, path):
         fs = FileSystem()
         files = fs.getFiles(path)
-        
+
         return files
 
     def _getConfig(self, path):
@@ -21,7 +22,7 @@ class Backlog():
 
         val = Validation()
         validConfig = val.validateConfig(path, json)
-        if validConfig == True:
+        if validConfig is True:
             return json
         else:
             raise ValueError(f"configuration file not valid: {validConfig[1]}")
@@ -40,16 +41,17 @@ class Backlog():
         json = parser.json(content)
 
         val = Validation()
-        if val.validateMetadata(path, json, config):
+        validateResult = val.validateMetadata(path, json, config)
+        if validateResult is True:
             return json
         else:
-            return False
+            raise ValueError(f"metadata not valid: {validateResult[1]}")
 
     def _buildWorkItems(self, parsedFiles, config):
         epics = []
         for epic in parsedFiles:
             builtEpic = self._buildEpic(epic, config)
-            if builtEpic != None:
+            if builtEpic is not None:
                 epics.append(builtEpic)
 
         return epics
@@ -62,7 +64,7 @@ class Backlog():
 
     def _buildEpic(self, item, config):
         json = self._getAndValidateJson(item["epic"], config)
-        if json != False:
+        if json is not False:
             epic = entities.Epic()
             epic.title = json["title"]
             epic.description = json["description"]
@@ -70,11 +72,11 @@ class Backlog():
                 epic.addTag(self._createTag(tag))
             for role in json["roles"]:
                 epic.addTag(self._createTag(role))
-            
+
             if "features" in item.keys() and len(item["features"]) > 0:
                 for feature in item["features"]:
                     builtFeature = self._buildFeature(feature, config)
-                    if builtFeature != None:
+                    if builtFeature is not None:
                         epic.addFeature(builtFeature)
 
             return epic
@@ -83,7 +85,7 @@ class Backlog():
 
     def _buildFeature(self, item, config):
         json = self._getAndValidateJson(item["feature"], config)
-        if json != False:
+        if json is not False:
             feature = entities.Feature()
             feature.title = json["title"]
             feature.description = json["description"]
@@ -91,11 +93,11 @@ class Backlog():
                 feature.addTag(self._createTag(tag))
             for role in json["roles"]:
                 feature.addTag(self._createTag(role))
-            
+
             if "stories" in item.keys() and len(item["stories"]) > 0:
                 for story in item["stories"]:
                     builtStory = self._buildStory(story, config)
-                    if builtStory != None:
+                    if builtStory is not None:
                         feature.addUserStory(builtStory)
 
             return feature
@@ -104,7 +106,7 @@ class Backlog():
 
     def _buildStory(self, item, config):
         json = self._getAndValidateJson(item["story"], config)
-        if json != False:
+        if json is not False:
             story = entities.UserStory()
             story.title = json["title"]
             story.description = json["description"]
@@ -112,11 +114,11 @@ class Backlog():
                 story.addTag(self._createTag(tag))
             for role in json["roles"]:
                 story.addTag(self._createTag(role))
-            
+
             if "tasks" in item.keys() and len(item["tasks"]) > 0:
                 for task in item["tasks"]:
                     builtTask = self._buildTask(task, config)
-                    if builtTask != None:
+                    if builtTask is not None:
                         story.addTask(builtTask)
 
             return story
@@ -125,7 +127,7 @@ class Backlog():
 
     def _buildTask(self, item, config):
         json = self._getAndValidateJson(item["task"], config)
-        if json != False:
+        if json is not False:
             task = entities.Task()
             task.title = json["title"]
             task.description = json["description"]
@@ -133,15 +135,31 @@ class Backlog():
                 task.addTag(self._createTag(tag))
             for role in json["roles"]:
                 task.addTag(self._createTag(role))
- 
+
             return task
         else:
             return None
 
-    def build(self, path, validateOnly=False):
-        if validateOnly: print(f"Validating metadata ({path})...")
+    def _deployGitHub(self, args, workitems):
+        github = services.GitHub(token=args.token)
+        github.deploy(args, workitems)
+
+    def _deployAzure(self, args, workitems):
+        # TODO: build out azure devops
+        pass
+
+    def build(self, args):
+        if args.validate_only is not None:
+            path = args.validate_only
+            print(f"Validating metadata ({path})...")
+        else:
+            path = './workitems/' + args.backlog
 
         files = self._gatherWorkItems(path)
         config = self._getConfig(path)
         parsedFiles = self._parseWorkItems(files)
-        workItems = self._buildWorkItems(parsedFiles, config)       
+        workItems = self._buildWorkItems(parsedFiles, config)
+
+        if args.validate_only is None:
+            if args.repo.lower() == 'github':
+                self._deployGitHub(args, workItems)

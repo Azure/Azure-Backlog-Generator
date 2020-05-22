@@ -1,6 +1,7 @@
 import pytest
-from typing import *
+from typing import List
 import src.azbacklog.entities as entities
+
 
 def test_initEpic():
     task = entities.Task()
@@ -8,10 +9,12 @@ def test_initEpic():
     assert isinstance(task.tags, List)
     assert len(task.tags) == 0
 
+
 def test_setTitleToString():
     task = entities.Task()
     task.title = "Test"
     assert task.title == "Test"
+
 
 def test_setTitleToNumber():
     task = entities.Task()
@@ -20,10 +23,12 @@ def test_setTitleToNumber():
         task.title = 42
     assert "value must be a string" in str(exc.value)
 
+
 def test_setDescriptionToString():
     task = entities.Task()
     task.description = "Test"
     assert task.description == "Test"
+
 
 def test_setDescriptionToNumber():
     task = entities.Task()
@@ -31,6 +36,7 @@ def test_setDescriptionToNumber():
     with pytest.raises(TypeError) as exc:
         task.description = 42
     assert "value must be a string" in str(exc.value)
+
 
 def test_addTagsToTagList():
     task = entities.Task()
@@ -41,6 +47,7 @@ def test_addTagsToTagList():
     assert len(task.tags) == 5
     assert isinstance(task.tags, List)
     assert isinstance(task.tags[0], entities.Tag)
+
 
 def test_addGenericsToTagList():
     task = entities.Task()

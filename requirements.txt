@@ -2,3 +2,4 @@ pyfakefs
 pytest
 coverage
 mock
+flake8

@@ -1,6 +1,7 @@
-from typing import *
+from typing import List
 from .task import Task
 from .tag import Tag
+
 
 class UserStory():
 
@@ -13,7 +14,7 @@ class UserStory():
         return self._title
 
     @title.setter
-    def title(self, value : str):
+    def title(self, value: str):
         if not isinstance(value, str):
             raise TypeError("value must be a string")
         self._title = value
@@ -23,7 +24,7 @@ class UserStory():
         return self._description
 
     @description.setter
-    def description(self, value : str):
+    def description(self, value: str):
         if not isinstance(value, str):
             raise TypeError("value must be a string")
         self._description = value
@@ -32,7 +33,7 @@ class UserStory():
     def tasks(self) -> List[Task]:
         return self._tasks
 
-    def addTask(self, value : Task):
+    def addTask(self, value: Task):
         if not isinstance(value, Task):
             raise TypeError("value must be of type 'Task'")
         self._tasks.append(value)
@@ -41,7 +42,7 @@ class UserStory():
     def tags(self) -> List[Tag]:
         return self._tags
 
-    def addTag(self, value : Tag):
+    def addTag(self, value: Tag):
         if not isinstance(value, Tag):
             raise TypeError("value must be of type 'Tag'")
-        self._tags.append(value)      
+        self._tags.append(value)

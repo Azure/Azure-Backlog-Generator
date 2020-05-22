@@ -1,6 +1,7 @@
 import re
 import json
 
+
 class Parser():
 
     def links(self, desc) -> str:
@@ -31,7 +32,7 @@ class Parser():
                 epicCnt += 1
                 featureCnt = -1
 
-                parsedFiles.append({ 'epic' : file})
+                parsedFiles.append({'epic': file})
             elif (len(parsedPath)) == 5:
                 featureCnt += 1
                 storyCnt = -1
@@ -39,23 +40,21 @@ class Parser():
                 if featureCnt == 0:
                     parsedFiles[epicCnt]["features"] = []
 
-                parsedFiles[epicCnt]["features"].append({ 'feature' : file })
+                parsedFiles[epicCnt]["features"].append({'feature': file})
             elif (len(parsedPath)) == 6:
                 storyCnt += 1
                 taskCnt = -1
-                
+
                 if storyCnt == 0:
                     parsedFiles[epicCnt]["features"][featureCnt]["stories"] = []
 
-                parsedFiles[epicCnt]["features"][featureCnt]["stories"].append({ 'story' : file })
+                parsedFiles[epicCnt]["features"][featureCnt]["stories"].append({'story': file})
             elif (len(parsedPath)) == 7:
                 taskCnt += 1
 
                 if taskCnt == 0:
                     parsedFiles[epicCnt]["features"][featureCnt]["stories"][storyCnt]["tasks"] = []
 
-                parsedFiles[epicCnt]["features"][featureCnt]["stories"][storyCnt]["tasks"].append({ 'task' : file })
+                parsedFiles[epicCnt]["features"][featureCnt]["stories"][storyCnt]["tasks"].append({'task': file})
 
         return parsedFiles
-
-

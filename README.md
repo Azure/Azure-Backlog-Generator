@@ -7,7 +7,7 @@
 
 Following repetitive processes and aligning all resources consistently can be a daunting task, and it can be common to overlook a step or make an incorrect assumption. There are many variables to consider in any complex process&mdash;identifying roles, resources, etc. 
 
-WHen conducting intense processes, it can be helpful to have a list of tasks to direct efforts. The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on _proven practices_. The backlogs can be generated in either Azure DevOps or GitHub.
+When conducting intense processes, it can be helpful to have a list of tasks to direct efforts. The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on _proven practices_. The backlogs can be generated in either Azure DevOps or GitHub.
 
 ## Currently Supported Backlogs
 Azure Backlog Generator currently supports creating backlogs for the following processes.
@@ -40,7 +40,7 @@ required arguments:
 optional arguments:
   -h, --help                                        show this help message and exit
   -r {azure,github}, --repo {azure,github}          targetted repository type
-  -p PROJECT, --project PROJECT                     project name to create
+  -p PROJECT, --project PROJECT                     project (repository) name to create
   -o ORG, --org ORG                                 Optional. If the target is a GitHub organization,
                                                     specify the organization's name.
   -b {caf,tfs}, --backlog {caf,tfs}                 type of backlog to create

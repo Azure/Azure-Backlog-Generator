@@ -1,6 +1,0 @@
-{
-    "title": "Review Expanded Scope Checklist",
-    "description": "Review the [expanded scope checklist](https://docs.microsoft.com/en-us/azure/architecture/cloud-adoption/migrate/expanded-scope/) to identify any scope requirements which would cause significant deviations from the Azure Migration Guide.",
-    "tags": ["First Workload"],
-    "roles": []
-}

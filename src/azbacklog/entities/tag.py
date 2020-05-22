@@ -5,7 +5,7 @@ class Tag():
         return self._title
 
     @title.setter
-    def title(self, value : str):
+    def title(self, value: str):
         if not isinstance(value, str):
             raise TypeError("value must be a string")
         self._title = value

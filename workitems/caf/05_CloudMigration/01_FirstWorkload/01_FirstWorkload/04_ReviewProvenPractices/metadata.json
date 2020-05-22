@@ -1,0 +1,6 @@
+{
+    "title": "Review Proven Practices",
+    "description": "Review [migration proven practices](https://docs.microsoft.com/en-us/azure/architecture/cloud-adoption/migrate/azure-best-practices/) to identify additional technical requirements that would aid in the success of your migration effort.",
+    "tags": ["First Workload"],
+    "roles": []
+}

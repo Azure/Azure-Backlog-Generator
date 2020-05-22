@@ -1,15 +1,18 @@
 import pytest
-from typing import *
+from typing import List
 import src.azbacklog.entities as entities
+
 
 def test_initTag():
     t = entities.Tag()
     assert isinstance(t, entities.Tag)
 
+
 def test_setTitleToString():
     t = entities.Tag()
     t.title = "Test"
     assert t.title == "Test"
+
 
 def test_setTitleToNumber():
     t = entities.Tag()

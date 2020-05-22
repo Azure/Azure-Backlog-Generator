@@ -1,0 +1,16 @@
+[flake8]
+# ignore:
+#    E501: line too long
+#    F401: module imported but unused
+#    W504: line break after binary operator
+ignore = 
+    E501,
+    F401,
+    W504
+exclude =
+    .git,
+    __pycache__,
+    .pytest_cache,
+    build,
+    dist
+max-complexity = 10

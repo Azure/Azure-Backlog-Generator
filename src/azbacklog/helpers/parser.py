@@ -25,15 +25,16 @@ class Parser():
 
         epicCnt = -1
         for file in files:
-            parsedPath = file.replace('workitems/', '')      # remove 'workitems/' from path so path is consistent b/t run and test
+            parsedPath = file[file.index('workitems/') + 10:]      # remove '*/workitems/' from path so path is consistent b/t run and test
+            parsedPath = parsedPath.replace('\\', '/')             # remove '\\' in windows paths
             parsedPath = re.split('/', parsedPath)
 
-            if (len(parsedPath)) == 4:
+            if (len(parsedPath)) == 3:
                 epicCnt += 1
                 featureCnt = -1
 
                 parsedFiles.append({'epic': file})
-            elif (len(parsedPath)) == 5:
+            elif (len(parsedPath)) == 4:
                 featureCnt += 1
                 storyCnt = -1
 
@@ -41,7 +42,7 @@ class Parser():
                     parsedFiles[epicCnt]["features"] = []
 
                 parsedFiles[epicCnt]["features"].append({'feature': file})
-            elif (len(parsedPath)) == 6:
+            elif (len(parsedPath)) == 5:
                 storyCnt += 1
                 taskCnt = -1
 
@@ -49,7 +50,7 @@ class Parser():
                     parsedFiles[epicCnt]["features"][featureCnt]["stories"] = []
 
                 parsedFiles[epicCnt]["features"][featureCnt]["stories"].append({'story': file})
-            elif (len(parsedPath)) == 7:
+            elif (len(parsedPath)) == 6:
                 taskCnt += 1
 
                 if taskCnt == 0:

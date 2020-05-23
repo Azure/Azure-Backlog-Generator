@@ -153,7 +153,7 @@ class Backlog():
             path = args.validate_only
             print(f"Validating metadata ({path})...")
         else:
-            path = './workitems/' + args.backlog
+            path = FileSystem.findWorkitems() + args.backlog
 
         files = self._gatherWorkItems(path)
         config = self._getConfig(path)

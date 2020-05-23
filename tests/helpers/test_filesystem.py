@@ -9,7 +9,7 @@ def test_getFiles_CorrectFileSystem(fs):
     MockedFiles._mockCorrectFileSystem(fs)
 
     f = helpers.FileSystem()
-    files = f.getFiles('./correct')
+    files = f.getFiles('./workitems/correct')
     assert len(files) == 20
 
 

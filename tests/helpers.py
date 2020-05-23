@@ -5,6 +5,11 @@ class Noniterable_str(str):
         yield self
 
 
+class StringContains(str):
+    def __eq__(self, other):
+        return self in other
+
+
 class Lists():
     @staticmethod
     def contains(list, filter):

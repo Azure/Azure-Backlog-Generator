@@ -244,7 +244,7 @@ def test_deploy_withOrg(fs):
     gh._buildDescription = MagicMock(return_value=mock_returnNone)
 
     backlog = Backlog()
-    config = backlog._getConfig('correct')
+    config = backlog._getConfig('workitems/correct')
     workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
 
     args = argparse.Namespace()
@@ -282,7 +282,7 @@ def test_deploy_withRepo(fs):
     gh._buildDescription = MagicMock(return_value=mock_returnNone)
 
     backlog = Backlog()
-    config = backlog._getConfig('correct')
+    config = backlog._getConfig('workitems/correct')
     workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
 
     args = argparse.Namespace()

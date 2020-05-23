@@ -1,7 +1,7 @@
 class MockedFiles():
     @staticmethod
     def _mockCorrectFileSystem(fs):
-        fs.create_file('./correct/config.json',
+        fs.create_file('./workitems/correct/config.json',
                        contents='{ \
                                     "tags" : [ \
                                         "01_Folder", \
@@ -13,142 +13,142 @@ class MockedFiles():
                                         "AppDev" \
                                     ] \
                                 }')
-        fs.create_file('./correct/01_epic/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/attachment.doc')
-        fs.create_file('./correct/01_epic/01_feature/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/attachment.doc')
+        fs.create_file('./workitems/correct/01_epic/01_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/01_feature/01_story/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/01_feature/01_story/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder/01_story", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/01_feature/01_story/01_task/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/01_feature/01_story/01_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder/01_story/01_task", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/01_feature/01_story/02_task/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/01_feature/01_story/02_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder/01_story02_task", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/01_feature/02_story/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/01_feature/02_story/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder/02_story", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/01_feature/02_story/01_task/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/01_feature/02_story/01_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/01_folder/02_story/01_task", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/02_feature/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/02_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/02_folder", \
                                     "tags": ["01_Folder", "02_Folder"], \
                                     "roles": ["AppDev"] \
                                 }')
-        fs.create_file('./correct/01_epic/03_feature/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/03_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 01_folder/03_folder", \
                                     "tags": ["01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/01_epic/03_feature/attachment.doc')
-        fs.create_file('./correct/02_epic/metadata.json',
+        fs.create_file('./workitems/correct/01_epic/03_feature/attachment.doc')
+        fs.create_file('./workitems/correct/02_epic/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder", \
                                     "tags": ["02_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/01_story/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/01_story/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder/01_story", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/01_story/01_task/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/01_story/01_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder/01_story/01_task", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/01_story/02_task/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/01_story/02_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder/01_story/02_task", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/02_story/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/02_story/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder/02_story", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/01_feature/02_story/01_task/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/01_feature/02_story/01_task/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/01_folder/02_story", \
                                     "tags": ["02_Folder", "01_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/02_epic/02_feature/metadata.json',
+        fs.create_file('./workitems/correct/02_epic/02_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 02_folder/02_folder", \
                                     "tags": ["02_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/03_epic/metadata.json',
+        fs.create_file('./workitems/correct/03_epic/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 03_folder", \
                                     "tags": ["03_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/03_epic/01_feature/metadata.json',
+        fs.create_file('./workitems/correct/03_epic/01_feature/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 03_folder/03_folder", \
                                     "tags": ["03_Folder"], \
                                     "roles": [] \
                                 }')
-        fs.create_file('./correct/04_epic/metadata.json',
+        fs.create_file('./workitems/correct/04_epic/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \
                                     "description": "Lorem Ipsum 04_folder", \
@@ -169,26 +169,26 @@ class MockedFiles():
     @staticmethod
     def _mockFileList():
         files = [
-            './correct/01_epic/metadata.json',
-            './correct/01_epic/01_feature/metadata.json',
-            './correct/01_epic/01_feature/01_story/metadata.json',
-            './correct/01_epic/01_feature/01_story/01_task/metadata.json',
-            './correct/01_epic/01_feature/01_story/02_task/metadata.json',
-            './correct/01_epic/01_feature/02_story/metadata.json',
-            './correct/01_epic/01_feature/02_story/01_task/metadata.json',
-            './correct/01_epic/02_feature/metadata.json',
-            './correct/01_epic/03_feature/metadata.json',
-            './correct/02_epic/metadata.json',
-            './correct/02_epic/01_feature/metadata.json',
-            './correct/02_epic/01_feature/01_story/metadata.json',
-            './correct/02_epic/01_feature/01_story/01_task/metadata.json',
-            './correct/02_epic/01_feature/01_story/02_task/metadata.json',
-            './correct/02_epic/01_feature/02_story/metadata.json',
-            './correct/02_epic/01_feature/02_story/01_task/metadata.json',
-            './correct/02_epic/02_feature/metadata.json',
-            './correct/03_epic/metadata.json',
-            './correct/03_epic/01_feature/metadata.json',
-            './correct/04_epic/metadata.json'
+            './workitems/correct/01_epic/metadata.json',
+            './workitems/correct/01_epic/01_feature/metadata.json',
+            './workitems/correct/01_epic/01_feature/01_story/metadata.json',
+            './workitems/correct/01_epic/01_feature/01_story/01_task/metadata.json',
+            './workitems/correct/01_epic/01_feature/01_story/02_task/metadata.json',
+            './workitems/correct/01_epic/01_feature/02_story/metadata.json',
+            './workitems/correct/01_epic/01_feature/02_story/01_task/metadata.json',
+            './workitems/correct/01_epic/02_feature/metadata.json',
+            './workitems/correct/01_epic/03_feature/metadata.json',
+            './workitems/correct/02_epic/metadata.json',
+            './workitems/correct/02_epic/01_feature/metadata.json',
+            './workitems/correct/02_epic/01_feature/01_story/metadata.json',
+            './workitems/correct/02_epic/01_feature/01_story/01_task/metadata.json',
+            './workitems/correct/02_epic/01_feature/01_story/02_task/metadata.json',
+            './workitems/correct/02_epic/01_feature/02_story/metadata.json',
+            './workitems/correct/02_epic/01_feature/02_story/01_task/metadata.json',
+            './workitems/correct/02_epic/02_feature/metadata.json',
+            './workitems/correct/03_epic/metadata.json',
+            './workitems/correct/03_epic/01_feature/metadata.json',
+            './workitems/correct/04_epic/metadata.json'
         ]
 
         return files
@@ -211,61 +211,61 @@ class MockedFiles():
     def _mockParsedFileList():
         result = [
             {
-                'epic': './correct/01_epic/metadata.json',
+                'epic': './workitems/correct/01_epic/metadata.json',
                 'features': [
                     {
-                        'feature': './correct/01_epic/01_feature/metadata.json',
+                        'feature': './workitems/correct/01_epic/01_feature/metadata.json',
                         'stories': [
                             {
-                                'story': './correct/01_epic/01_feature/01_story/metadata.json',
+                                'story': './workitems/correct/01_epic/01_feature/01_story/metadata.json',
                                 'tasks': [
-                                    {'task': './correct/01_epic/01_feature/01_story/01_task/metadata.json'},
-                                    {'task': './correct/01_epic/01_feature/01_story/02_task/metadata.json'}
+                                    {'task': './workitems/correct/01_epic/01_feature/01_story/01_task/metadata.json'},
+                                    {'task': './workitems/correct/01_epic/01_feature/01_story/02_task/metadata.json'}
                                 ]
                             },
                             {
-                                'story': './correct/01_epic/01_feature/02_story/metadata.json',
+                                'story': './workitems/correct/01_epic/01_feature/02_story/metadata.json',
                                 'tasks': [
-                                    {'task': './correct/01_epic/01_feature/02_story/01_task/metadata.json'}
+                                    {'task': './workitems/correct/01_epic/01_feature/02_story/01_task/metadata.json'}
                                 ]
                             }
                         ]
                     },
-                    {'feature': './correct/01_epic/02_feature/metadata.json'},
-                    {'feature': './correct/01_epic/03_feature/metadata.json'}
+                    {'feature': './workitems/correct/01_epic/02_feature/metadata.json'},
+                    {'feature': './workitems/correct/01_epic/03_feature/metadata.json'}
                 ]
             },
             {
-                'epic': './correct/02_epic/metadata.json',
+                'epic': './workitems/correct/02_epic/metadata.json',
                 'features': [
                     {
-                        'feature': './correct/02_epic/01_feature/metadata.json',
+                        'feature': './workitems/correct/02_epic/01_feature/metadata.json',
                         'stories': [
                             {
-                                'story': './correct/02_epic/01_feature/01_story/metadata.json',
+                                'story': './workitems/correct/02_epic/01_feature/01_story/metadata.json',
                                 'tasks': [
-                                    {'task': './correct/02_epic/01_feature/01_story/01_task/metadata.json'},
-                                    {'task': './correct/02_epic/01_feature/01_story/02_task/metadata.json'}
+                                    {'task': './workitems/correct/02_epic/01_feature/01_story/01_task/metadata.json'},
+                                    {'task': './workitems/correct/02_epic/01_feature/01_story/02_task/metadata.json'}
                                 ]
                             },
                             {
-                                'story': './correct/02_epic/01_feature/02_story/metadata.json',
+                                'story': './workitems/correct/02_epic/01_feature/02_story/metadata.json',
                                 'tasks': [
-                                    {'task': './correct/02_epic/01_feature/02_story/01_task/metadata.json'}
+                                    {'task': './workitems/correct/02_epic/01_feature/02_story/01_task/metadata.json'}
                                 ]
                             }
                         ]
                     },
-                    {'feature': './correct/02_epic/02_feature/metadata.json'}
+                    {'feature': './workitems/correct/02_epic/02_feature/metadata.json'}
                 ]
             },
             {
-                'epic': './correct/03_epic/metadata.json',
+                'epic': './workitems/correct/03_epic/metadata.json',
                 'features': [
-                    {'feature': './correct/03_epic/01_feature/metadata.json'}
+                    {'feature': './workitems/correct/03_epic/01_feature/metadata.json'}
                 ]
             },
-            {'epic': './correct/04_epic/metadata.json'}
+            {'epic': './workitems/correct/04_epic/metadata.json'}
         ]
 
         return result

@@ -7,7 +7,7 @@ from pyfakefs import fake_filesystem
 import azbacklog.helpers as helpers
 import azbacklog.entities as entities
 import azbacklog.services as services
-from tests.helpers import Lists
+from tests.helpers import Lists, StringContains
 from tests.mockedfiles import MockedFiles
 
 
@@ -29,7 +29,7 @@ def test_getConfig(monkeypatch, fs):
 
     def mockParserJsonReturnJson(*args, **kwargs):
         content = None
-        with open('./correct/config.json', 'r') as reader:
+        with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -73,7 +73,7 @@ def test_getAndValidateJson(monkeypatch, fs):
 
     def mockParserJsonReturnJson(*args, **kwargs):
         content = None
-        with open('./correct/01_epic/metadata.json', 'r') as reader:
+        with open('./workitems/correct/01_epic/metadata.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -134,7 +134,7 @@ def test_buildEpic(fs):
 
     def mockGetConfigReturnConfig(*args, **kwargs):
         content = None
-        with open('./correct/config.json', 'r') as reader:
+        with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -142,7 +142,7 @@ def test_buildEpic(fs):
 
     def mockParserJsonReturnEpicJson(*args, **kwargs):
         content = None
-        with open('./correct/01_epic/02_feature/metadata.json', 'r') as reader:
+        with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -184,7 +184,7 @@ def test_buildFeature(fs):
 
     def mockGetConfigReturnConfig(*args, **kwargs):
         content = None
-        with open('./correct/config.json', 'r') as reader:
+        with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -192,7 +192,7 @@ def test_buildFeature(fs):
 
     def mockParserJsonReturnFeatureJson(*args, **kwargs):
         content = None
-        with open('./correct/01_epic/02_feature/metadata.json', 'r') as reader:
+        with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -237,7 +237,7 @@ def test_buildStory(fs):
 
     def mockGetConfigReturnConfig(*args, **kwargs):
         content = None
-        with open('./correct/config.json', 'r') as reader:
+        with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -245,7 +245,7 @@ def test_buildStory(fs):
 
     def mockParserJsonReturnUserStoryJson(*args, **kwargs):
         content = None
-        with open('./correct/01_epic/02_feature/metadata.json', 'r') as reader:
+        with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -291,7 +291,7 @@ def test_buildTask(fs):
 
     def mockGetConfigReturnConfig(*args, **kwargs):
         content = None
-        with open('./correct/config.json', 'r') as reader:
+        with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -299,7 +299,7 @@ def test_buildTask(fs):
 
     def mockParserJsonReturnTaskJson(*args, **kwargs):
         content = None
-        with open('./correct/01_epic/02_feature/metadata.json', 'r') as reader:
+        with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
             reader.close()
 
@@ -333,7 +333,7 @@ def test_deployGitHub(patchedInit, patchedDeploy, fs):
     MockedFiles._mockCorrectFileSystem(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._getConfig('correct')
+    config = backlog._getConfig('workitems/correct')
     workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
@@ -354,7 +354,7 @@ def test_deployAzure(fs):
     MockedFiles._mockCorrectFileSystem(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._getConfig('correct')
+    config = backlog._getConfig('workitems/correct')
     workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
@@ -383,8 +383,8 @@ def test_build():
     backlog._deployAzure = MagicMock(return_value=None)
 
     backlog.build(Namespace(backlog='caf', repo='github', validate_only=None))
-    backlog._gatherWorkItems.assert_called_with('./workitems/caf')
-    backlog._getConfig.assert_called_with('./workitems/caf')
+    backlog._gatherWorkItems.assert_called_with(StringContains('./workitems/caf'))
+    backlog._getConfig.assert_called_with(StringContains('/workitems/caf'))
     backlog._parseWorkItems.assert_called_with(mockGatherWorkItemsReturnFileList())
     backlog._buildWorkItems.assert_called_with(mockParseWorkItemsReturnParsedFileList(), mockGetConfigReturnConfig())
     backlog._deployGitHub.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None)

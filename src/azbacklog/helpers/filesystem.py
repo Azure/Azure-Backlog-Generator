@@ -4,6 +4,17 @@ import os
 class FileSystem():
     parentPath = True
 
+    @staticmethod
+    def findWorkitems():
+        developedPath = os.path.join(os.path.realpath(os.path.dirname(__file__)), '../../../workitems/')
+        installedPath = os.path.join(os.path.realpath(os.path.dirname(__file__)), '../workitems/')
+        if os.path.exists(developedPath):
+            return developedPath
+        elif os.path.exists(installedPath):
+            return installedPath
+        else:
+            raise FileNotFoundError("'workitems' folder not found")
+
     def getFiles(self, path):
         files = []
         (root, dirNames, fileNames) = next(os.walk(path))

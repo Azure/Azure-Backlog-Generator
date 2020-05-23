@@ -29,9 +29,6 @@ setup(
         'src.azbacklog.services',
         'src.scripts',
     ],
-    data_files=[
-        ('workitems/caf', ('workitems/caf/config.json'))
-    ],
     install_requires=[
         'pygithub'
     ],

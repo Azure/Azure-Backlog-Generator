@@ -18,11 +18,11 @@ setup(
     author="Joshua Davis",
     author_email="me@jdav.is",
     url='https://github.com/Azure/Azure-Backlog-Generator',
-    version='0.1.0',
+    version='0.1.1',
     description='The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on proven practices. The backlogs can be generated in either Azure DevOps or GitHub.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=find_packages('src'),
+    packages=['azbacklog'],
     package_dir={'': 'src'},
     install_requires=[
         'pygithub'
@@ -30,6 +30,9 @@ setup(
     extras_require={
         'dev': requirements
     },
-    scripts=['src/scripts/azbacklog'],
+    scripts=[
+        'src/scripts/azbacklog.py',
+        'src/scripts/azbacklog.bat'
+    ],
     python_requires='>=3.6'
 )

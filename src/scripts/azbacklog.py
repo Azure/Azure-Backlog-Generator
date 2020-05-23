@@ -4,9 +4,11 @@ import argparse
 import azbacklog.helpers as helpers
 import azbacklog.services as services
 
+
 def run(args):
     bl = helpers.Backlog()
     bl.build(args)
+
 
 def main():
     parser = argparse.ArgumentParser(prog='azbacklog', description="Generate a backlog of work items.", allow_abbrev=False)
@@ -19,24 +21,25 @@ def main():
     parser.set_defaults(func=run)
     args = parser.parse_args()
 
-    if args.validate_only == None:
-        if args.token == None:
+    if args.validate_only is None:
+        if args.token is None:
             args.token = input('Enter access token: ')
             helpers.TokenAction.validate(parser, args.token, args)
 
-        if args.repo == None:
+        if args.repo is None:
             args.repo = input('Enter repository type [azure, github]: ')
             helpers.RepoAction.validate(parser, args.repo, args)
-    
-        if args.project == None:
+
+        if args.project is None:
             args.project = input('Enter project name: ')
             helpers.ProjectAction.validate(parser, args.project, args)
 
-        if args.backlog == None:
+        if args.backlog is None:
             args.backlog = input('Choose backlog type to create (see docs): ')
             helpers.BacklogAction.validate(parser, args.backlog, args)
 
     args.func(args)
+
 
 if __name__ == "__main__":
     main()

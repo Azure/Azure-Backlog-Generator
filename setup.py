@@ -33,19 +33,12 @@ def getFiles(path):
     return files
 
 
-data_files = []
-if os.path.exists('workitems'):
-    data_files.extend(getFiles('workitems'))
-else:
-    data_files.extend(getFiles('src/azbacklog/workitems'))
-
-
 setup(
     name='azbacklog',
     author="Joshua Davis",
     author_email="me@jdav.is",
     url='https://github.com/Azure/Azure-Backlog-Generator',
-    version='0.1.11',
+    version='0.1.12',
     description='The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on proven practices. The backlogs can be generated in either Azure DevOps or GitHub.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -56,7 +49,7 @@ setup(
         'azbacklog.helpers',
         'azbacklog.services'
     ],
-    data_files=data_files,
+    data_files=getFiles('workitems'),
     install_requires=[
         'pygithub'
     ],

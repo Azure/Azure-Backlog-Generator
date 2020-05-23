@@ -1,4 +1,5 @@
 import os
+import sys
 
 
 class FileSystem():
@@ -6,8 +7,8 @@ class FileSystem():
 
     @staticmethod
     def findWorkitems():
-        developedPath = os.path.join(os.path.realpath(os.path.dirname(__file__)), '../../../workitems/')
-        installedPath = os.path.join(os.path.realpath(os.path.dirname(__file__)), '../workitems/')
+        developedPath = './workitems/'
+        installedPath = os.path.join(sys.prefix, 'workitems/')
         if os.path.exists(developedPath):
             return developedPath
         elif os.path.exists(installedPath):

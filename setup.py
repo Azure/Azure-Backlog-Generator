@@ -21,9 +21,10 @@ def getFiles(path):
     (root, dirNames, fileNames) = next(os.walk(path))
 
     fileNames.sort()
+    dirFiles = []
     for fileName in fileNames:
-        if fileName == 'metadata.json':
-            files.append((path, os.path.join(path, fileName)))
+        dirFiles.append(os.path.join(path, fileName))
+    files.append((path, dirFiles))
 
     dirNames.sort()
     for dirName in dirNames:
@@ -37,7 +38,7 @@ setup(
     author="Joshua Davis",
     author_email="me@jdav.is",
     url='https://github.com/Azure/Azure-Backlog-Generator',
-    version='0.1.9',
+    version='0.1.10',
     description='The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on proven practices. The backlogs can be generated in either Azure DevOps or GitHub.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -48,7 +49,7 @@ setup(
         'azbacklog.helpers',
         'azbacklog.services'
     ],
-    data_files=getFiles('./workitems'),
+    data_files=getFiles('workitems'),
     install_requires=[
         'pygithub'
     ],

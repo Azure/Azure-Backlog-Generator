@@ -1,32 +1,43 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-from os import path
+import os
 import glob
 
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+this_directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 requirements = []
-with open(path.join(this_directory, 'requirements.txt'), encoding='utf-8') as r:
+with open(os.path.join(this_directory, 'requirements.txt'), encoding='utf-8') as r:
     line = r.readline()
     while line:
         requirements.append(line.strip())
         line = r.readline()
 
-workitem_files = []
-directories = glob.glob('workitems/')
-for directory in directories:
-    files = glob.glob(directory + '*')
-    workitem_files.append((directory, files))
+
+def getFiles(path):
+    files = []
+    (root, dirNames, fileNames) = next(os.walk(path))
+
+    fileNames.sort()
+    for fileName in fileNames:
+        if fileName == 'metadata.json':
+            files.append((path, os.path.join(path, fileName)))
+
+    dirNames.sort()
+    for dirName in dirNames:
+        files.extend(getFiles(os.path.join(root, dirName)))
+
+    return files
+
 
 setup(
     name='azbacklog',
     author="Joshua Davis",
     author_email="me@jdav.is",
     url='https://github.com/Azure/Azure-Backlog-Generator',
-    version='0.1.8',
+    version='0.1.9',
     description='The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on proven practices. The backlogs can be generated in either Azure DevOps or GitHub.',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -37,7 +48,7 @@ setup(
         'azbacklog.helpers',
         'azbacklog.services'
     ],
-    data_files=workitem_files,
+    data_files=getFiles('./workitems'),
     install_requires=[
         'pygithub'
     ],

@@ -1,6 +1,6 @@
 from mock import Mock, MagicMock
 from tests.mockedfiles import MockedFiles
-import src.azbacklog.helpers as helpers
+import azbacklog.helpers as helpers
 
 
 def test_validateMetadata():

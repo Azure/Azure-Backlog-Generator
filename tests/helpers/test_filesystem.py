@@ -2,7 +2,7 @@ import os
 import pytest
 from pyfakefs import fake_filesystem
 from tests.mockedfiles import MockedFiles
-import src.azbacklog.helpers as helpers
+import azbacklog.helpers as helpers
 
 
 def test_getFiles_CorrectFileSystem(fs):

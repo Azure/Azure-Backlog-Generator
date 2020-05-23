@@ -7,9 +7,9 @@ from github.AuthenticatedUser import AuthenticatedUser
 from github.Issue import Issue
 from github.Label import Label
 from github.Organization import Organization
-from src.azbacklog.services import GitHub
-from src.azbacklog.entities import Task
-from src.azbacklog.helpers import Backlog
+from azbacklog.services import GitHub
+from azbacklog.entities import Task
+from azbacklog.helpers import Backlog
 from tests.helpers import Noniterable_str
 from tests.mockedfiles import MockedFiles
 

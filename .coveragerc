@@ -1,7 +1,8 @@
 [run]
 omit = 
     */__init__.py
-    src/scripts/azbacklog.py
+    src/azbacklog/azbacklog.py
+    src/scripts/*
 
 source = 
     src/

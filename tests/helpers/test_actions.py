@@ -3,7 +3,7 @@ import argparse
 import contextlib
 import io
 import sys
-import src.azbacklog.helpers as helpers
+import azbacklog.helpers as helpers
 
 
 @contextlib.contextmanager

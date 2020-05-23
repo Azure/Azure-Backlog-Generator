@@ -1,5 +1,5 @@
 from tests.mockedfiles import MockedFiles
-import src.azbacklog.helpers as helpers
+import azbacklog.helpers as helpers
 
 
 def test_parse():

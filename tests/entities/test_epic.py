@@ -1,6 +1,6 @@
 import pytest
 from typing import List
-import src.azbacklog.entities as entities
+import azbacklog.entities as entities
 
 
 def test_initEpic():

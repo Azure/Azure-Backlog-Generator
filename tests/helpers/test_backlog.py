@@ -4,9 +4,9 @@ import os
 from argparse import Namespace
 from mock import Mock, MagicMock, patch
 from pyfakefs import fake_filesystem
-import src.azbacklog.helpers as helpers
-import src.azbacklog.entities as entities
-import src.azbacklog.services as services
+import azbacklog.helpers as helpers
+import azbacklog.entities as entities
+import azbacklog.services as services
 from tests.helpers import Lists
 from tests.mockedfiles import MockedFiles
 
@@ -324,8 +324,8 @@ def test_buildTask(fs):
     assert Lists.contains(task.tags, lambda tag: tag.title == "AppDev") is True
 
 
-@patch('src.azbacklog.services.github.GitHub.deploy')
-@patch('src.azbacklog.services.github.Github.__init__')
+@patch('azbacklog.services.github.GitHub.deploy')
+@patch('azbacklog.services.github.Github.__init__')
 def test_deployGitHub(patchedInit, patchedDeploy, fs):
     patchedInit.return_value = None
     patchedDeploy.return_value = None

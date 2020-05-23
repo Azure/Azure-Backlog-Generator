@@ -33,11 +33,11 @@ def getFiles(path):
     return files
 
 
-def getDataFiles():
-    if os.path.exists('workitems'):
-        return getFiles('workitems')
-    else:
-        return getFiles('src/azbacklog/workitems')
+data_files = []
+if os.path.exists('workitems'):
+    data_files.extend(getFiles('workitems'))
+else:
+    data_files.extend(getFiles('src/azbacklog/workitems'))
 
 
 setup(
@@ -56,7 +56,7 @@ setup(
         'azbacklog.helpers',
         'azbacklog.services'
     ],
-    data_files=getDataFiles,
+    data_files=data_files,
     install_requires=[
         'pygithub'
     ],

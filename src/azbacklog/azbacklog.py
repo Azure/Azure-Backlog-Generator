@@ -15,7 +15,7 @@ def main():
     parser.add_argument('-t', '--token', action=TokenAction, help="GitHub or Azure DevOps token")
     parser.add_argument('-r', '--repo', choices=['azure', 'github'], action=RepoAction, help="targetted repository type")
     parser.add_argument('-p', '--project', action=ProjectAction, help="project (repository) name to create")
-    parser.add_argument('-o', '--org', help="Optional. If the target is a GitHub organization, specify the organization's name.")
+    parser.add_argument('-o', '--org', help="Optional if the target is a GitHub organization. Required if Azure DevOps.")
     parser.add_argument('-b', '--backlog', choices=['caf', 'tfs'], action=BacklogAction, help="type of backlog to create")
     parser.add_argument('--validate-only', help=argparse.SUPPRESS)
     parser.set_defaults(func=run)

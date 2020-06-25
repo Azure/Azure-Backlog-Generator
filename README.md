@@ -63,7 +63,7 @@ The previous commands will clone the repo and not only install the runtime depen
 ### Executing Locally Under Development
 Once you've installed the package locally (e.g. `-e .[dev]` in the previous command), executing the package is as simple as (include the necessary parameters outlined above in the [Create a Backlog](#Create-a-Backlog) section):
 ```bash
-./main.py
+./azbacklog
 ```
 
 ### Running Tests

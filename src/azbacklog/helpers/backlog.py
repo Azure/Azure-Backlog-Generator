@@ -164,4 +164,4 @@ class Backlog():
             if args.repo.lower() == 'github':
                 self._deployGitHub(args, workItems)
             elif args.repo.lower() == 'azure':
-                self._deployAzure(args, workItems) 
+                self._deployAzure(args, workItems)

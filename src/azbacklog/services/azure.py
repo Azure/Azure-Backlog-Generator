@@ -4,6 +4,7 @@ from msrest.authentication import BasicAuthentication
 from types import SimpleNamespace
 import time
 
+
 class AzDevOps():
 
     def __init__(self, org=None, token=None):
@@ -18,9 +19,9 @@ class AzDevOps():
 
         return connection.clients
 
-    def _getProject(self, name):
+    def _get_project(self, name):
         core_client = self.clients.get_core_client()
-        
+
         attempts = 0
         while (attempts < 20):
             projects = core_client.get_projects()
@@ -33,21 +34,32 @@ class AzDevOps():
 
         return None
 
-    def _createProject(self, name):
-        core_client = self.clients.get_core_client()
-        capabilities = { 'versioncontrol' : { 'sourceControlType' : 'Git' }, 
-                         'processTemplate' : { 'templateTypeId' : 'adcc42ab-9882-485e-a3ed-7678f01f66bc' }}
-        project = TeamProject(name=name, description=None, visibility='private', capabilities=capabilities)
-        ops_ref = core_client.queue_create_project(project)
+    def _check_status(self, ops_id):
         ops_client = self.clients.get_operations_client()
         done = False
+
         while (not done):
-            ops_status = ops_client.get_operation(ops_ref.id)
+            ops_status = ops_client.get_operation(ops_id)
             if ops_status.status == 'cancelled' or ops_status.status == 'failed':
-                raise RuntimeError('failed creating project')
+                return False
             done = ops_status.status == 'succeeded'
 
-    def _getTeam(self, project, name):
+        return True
+
+    def _create_project(self, name):
+        core_client = self.clients.get_core_client()
+        capabilities = {'versioncontrol': {'sourceControlType': 'Git'},
+                        'processTemplate': {'templateTypeId': 'adcc42ab-9882-485e-a3ed-7678f01f66bc'}}
+        project = TeamProject(name=name, description=None, visibility='private', capabilities=capabilities)
+        ops_ref = core_client.queue_create_project(project)
+        ops_result = self._check_status(ops_ref.id)
+
+        if ops_result is False:
+            raise RuntimeError('failed creating project')
+        else:
+            return True
+
+    def _get_team(self, project, name):
         core_client = self.clients.get_core_client()
         teams = core_client.get_teams(project.id)
         for team in teams:
@@ -56,24 +68,26 @@ class AzDevOps():
 
         return None
 
-    def _enableEpics(self, project, name):
+    def _enable_epics(self, project, name):
         work_client = self.clients.get_work_client()
-        team = self._getTeam(project, name)
+        team = self._get_team(project, name)
 
-        patch =  {
+        patch = {
             "backlogVisibilities": {
                 "Microsoft.EpicCategory": 'true',
                 "Microsoft.FeatureCategory": 'true',
                 "Microsoft.RequirementCategory": 'true'
             }
         }
+
         team_context = SimpleNamespace(**dict(
-            team_id = team.id,
-            project_id = team.project_id
+            team_id=team.id,
+            project_id=team.project_id
         ))
+
         return work_client.update_team_settings(patch, team_context)
 
-    def _createTags(self, tags):
+    def _create_tags(self, tags):
         tagList = []
         if len(tags) == 0:
             return None
@@ -83,7 +97,7 @@ class AzDevOps():
 
         return "; ".join(tagList)
 
-    def _createWorkItem(self, project, witType, title, description, tags=None, parent=None):
+    def _create_work_item(self, project, wit_type, title, description, tags=None, parent=None):
         wit_client = self.clients.get_work_item_tracking_client()
         patch = [
             {
@@ -97,7 +111,7 @@ class AzDevOps():
                 "value": description
             }
         ]
-        
+
         if tags is not None:
             patch.append(
                 {
@@ -113,67 +127,64 @@ class AzDevOps():
                     "op": "add",
                     "path": "/relations/-",
                     "value": {
-                        "rel" : "System.LinkTypes.Hierarchy-Reverse",
-                        "url" : parent.url
+                        "rel": "System.LinkTypes.Hierarchy-Reverse",
+                        "url": parent.url
                     }
                 }
             )
-        
-        return wit_client.create_work_item(patch, project, witType)
 
-    def deploy(self, config, workitems):
+        return wit_client.create_work_item(patch, project, wit_type)
+
+    def deploy(self, config, work_items):
         print("┌── Creating project (" + config.org + "/" + config.project + ")...")
-        self._createProject(config.project)
-        project = self._getProject(config.project)
+        self._create_project(config.project)
+        project = self._get_project(config.project)
 
         print("├── Enabling epics visibility in backlog...")
-        team = self._enableEpics(project, config.project)
+        self._enable_epics(project, config.project)
 
-        epicCnt = 1
-        featCnt = 1
-        for epic in workitems:
-            if epicCnt < len(workitems):
+        epic_count = 1
+        for epic in work_items:
+            if epic_count < len(work_items):
                 print("├── Creating epic: " + epic.title + "...")
-                epicStr = "│   "
+                epic_string = "│   "
             else:
                 print("└── Creating epic: " + epic.title + "...")
-                epicStr = "    "
-            witEpic = self._createWorkItem(project.id, 'epic', epic.title, epic.description, tags=self._createTags(epic.tags))
+                epic_string = "    "
+            created_epic = self._create_work_item(project.id, 'epic', epic.title, epic.description, tags=self._create_tags(epic.tags))
 
-            epicFeatCnt = 1
+            feature_count = 1
             for feature in epic.features:
-                if (epicFeatCnt == len(epic.features)):
-                    print(epicStr + "└── Creating feature: " + feature.title + "...")
-                    featureStr = epicStr + "    "
+                if (feature_count == len(epic.features)):
+                    print(epic_string + "└── Creating feature: " + feature.title + "...")
+                    feature_string = epic_string + "    "
                 else:
-                    print(epicStr + "├── Creating feature: " + feature.title + "...")
-                    featureStr = epicStr + "│   "
-                witFeature = self._createWorkItem(project.id, 'feature', feature.title, feature.description, tags=self._createTags(feature.tags), parent=witEpic)
+                    print(epic_string + "├── Creating feature: " + feature.title + "...")
+                    feature_string = epic_string + "│   "
+                created_feature = self._create_work_item(project.id, 'feature', feature.title, feature.description, tags=self._create_tags(feature.tags), parent=created_epic)
 
-                storyCnt = 1
+                story_count = 1
                 for story in feature.userStories:
-                    if storyCnt == len(feature.userStories):
-                        print(featureStr + "└── Creating user story: " + story.title + "...")
-                        storyStr = featureStr + "    "
+                    if story_count == len(feature.userStories):
+                        print(feature_string + "└── Creating user story: " + story.title + "...")
+                        story_string = feature_string + "    "
                     else:
-                        print(featureStr + "├── Creating user story: " + story.title + "...")
-                        storyStr = featureStr + "│   "
-                    witUserStory = self._createWorkItem(project.id, 'user story', story.title, story.description, tags=self._createTags(story.tags), parent=witFeature)
+                        print(feature_string + "├── Creating user story: " + story.title + "...")
+                        story_string = feature_string + "│   "
+                    created_story = self._create_work_item(project.id, 'user story', story.title, story.description, tags=self._create_tags(story.tags), parent=created_feature)
 
-                    taskCnt = 1
+                    task_count = 1
                     for task in story.tasks:
-                        if taskCnt == len(story.tasks):
-                            print(storyStr + "    └── Creating task: " + task.title + "...")
+                        if task_count == len(story.tasks):
+                            print(story_string + "    └── Creating task: " + task.title + "...")
                         else:
-                            print(storyStr + "    ├── Creating task: " + task.title + "...")
-                        witTask = self._createWorkItem(project.id, 'task', task.title, task.description, tags=self._createTags(task.tags), parent=witUserStory)
+                            print(story_string + "    ├── Creating task: " + task.title + "...")
+                        self._create_work_item(project.id, 'task', task.title, task.description, tags=self._create_tags(task.tags), parent=created_story)
 
-                        taskCnt += 1
+                        task_count += 1
 
-                    storyCnt += 1
+                    story_count += 1
 
-                epicFeatCnt += 1
-                featCnt += 1
+                feature_count += 1
 
-            epicCnt += 1       
-
+            epic_count += 1

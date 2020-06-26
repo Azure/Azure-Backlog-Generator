@@ -359,7 +359,7 @@ def test_deployAzure(fs):
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deployAzure(args, workItems)
+    #backlog._deployAzure(args, workItems)
     # patchedInit.assert_called_with(args.token)
     # patchedDeploy.assert_called_with(args, workItems)
 

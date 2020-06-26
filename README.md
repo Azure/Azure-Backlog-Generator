@@ -1,4 +1,4 @@
-# Azure Backlog Generator
+# Azure Backlog Generator (AzBacklog)
 
 [![github](https://github.com/Azure/Azure-Backlog-Generator/workflows/build/badge.svg)](https://github.com/Azure/Azure-Backlog-Generator/workflows/build/badge.svg)
 [![codecov](https://codecov.io/gh/Azure/Azure-Backlog-Generator/branch/master/graph/badge.svg)](https://codecov.io/gh/Azure/Azure-Backlog-Generator)
@@ -7,10 +7,10 @@
 
 Following repetitive processes and aligning all resources consistently can be a daunting task, and it can be common to overlook a step or make an incorrect assumption. There are many variables to consider in any complex process&mdash;identifying roles, resources, etc. 
 
-When conducting intense processes, it can be helpful to have a list of tasks to direct efforts. The Azure Backlog Generator (ABG) is designed to build backlogs for complex processes based on _proven practices_. The backlogs can be generated in either Azure DevOps or GitHub.
+When conducting intense processes, it can be helpful to have a list of tasks to direct efforts. The Azure Backlog Generator (AzBacklog) is designed to build backlogs for complex processes based on _proven practices_. The backlogs can be generated in either Azure DevOps or GitHub.
 
 ## Currently Supported Backlogs
-Azure Backlog Generator currently supports creating backlogs for the following processes.
+AzBacklog currently supports creating backlogs for the following processes.
 
 - [ ] [Cloud Adoption Framework (CAF)](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#cloud-adoption-framework-caf)
 - [ ] [Team Foundation Server (TFS) to Azure DevOps](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#team-foundation-server-tfs-to-azure-devops)
@@ -41,8 +41,8 @@ optional arguments:
   -h, --help                                        show this help message and exit
   -r {azure,github}, --repo {azure,github}          targetted repository type
   -p PROJECT, --project PROJECT                     project (repository) name to create
-  -o ORG, --org ORG                                 Optional. If the target is a GitHub organization,
-                                                    specify the organization's name.
+  -o ORG, --org ORG                                 REQUIRED. if target is Azure DevOps
+                                                    OPTIONAL. if a GitHub organization
   -b {caf,tfs}, --backlog {caf,tfs}                 type of backlog to create
 
 ```
@@ -63,7 +63,7 @@ The previous commands will clone the repo and not only install the runtime depen
 ### Executing Locally Under Development
 Once you've installed the package locally (e.g. `-e .[dev]` in the previous command), executing the package is as simple as (include the necessary parameters outlined above in the [Create a Backlog](#Create-a-Backlog) section):
 ```bash
-./main.py
+./azbacklog
 ```
 
 ### Running Tests

@@ -2,13 +2,15 @@ import pytest
 import json
 import os
 from argparse import Namespace
-from mock import Mock, MagicMock, patch
+from mock import Mock, MagicMock, PropertyMock, patch
 from pyfakefs import fake_filesystem
 import azbacklog.helpers as helpers
 import azbacklog.entities as entities
 import azbacklog.services as services
+from azbacklog.services import AzDevOps
 from tests.helpers import Lists, StringContains
 from tests.mockedfiles import MockedFiles
+from tests.services.test_azure import mock_auth
 
 
 def test_gatherWorkItems(monkeypatch):
@@ -324,11 +326,12 @@ def test_buildTask(fs):
     assert Lists.contains(task.tags, lambda tag: tag.title == "AppDev") is True
 
 
+# TODO: monkeypatch GitHub authentication
 @patch('azbacklog.services.github.GitHub.deploy')
-@patch('azbacklog.services.github.Github.__init__')
-def test_deployGitHub(patchedInit, patchedDeploy, fs):
-    patchedInit.return_value = None
-    patchedDeploy.return_value = None
+@patch('github.Github')
+def test_deployGitHub(patched_github, patched_deploy, fs):
+    patched_github.return_value = MagicMock()
+    patched_deploy.return_value = None
 
     MockedFiles._mockCorrectFileSystem(fs)
 
@@ -339,45 +342,41 @@ def test_deployGitHub(patchedInit, patchedDeploy, fs):
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
     backlog._deployGitHub(args, workItems)
-    patchedInit.assert_called_with(args.token)
-    patchedDeploy.assert_called_with(args, workItems)
+    patched_deploy.assert_called_with(args, workItems)
 
 
-# TODO: Unit test call to deployAzure
-# @patch('src.azbacklog.services.github.GitHub.deploy')
-# @patch('src.azbacklog.services.github.Github.__init__')
-# def test_deployGitHub(patchedInit, patchedDeploy, fs):
-def test_deployAzure(fs):
-    # patchedInit.return_value = None
-    # patchedDeploy.return_value = None
+@patch('azbacklog.services.azure.AzDevOps.deploy')
+def test_deployAzure(patched_deploy, fs, monkeypatch):
+    monkeypatch.setattr(services.AzDevOps, "_auth", mock_auth)
+
+    patched_deploy.return_value = None
 
     MockedFiles._mockCorrectFileSystem(fs)
 
     backlog = helpers.Backlog()
     config = backlog._getConfig('workitems/correct')
-    workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
+    work_items = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deployAzure(args, workItems)
-    # patchedInit.assert_called_with(args.token)
-    # patchedDeploy.assert_called_with(args, workItems)
+    backlog._deployAzure(args, work_items)
+    patched_deploy.assert_called_with(args, work_items)
 
 
 def test_build():
-    def mockGatherWorkItemsReturnFileList(*args, **kwargs):
+    def mock_gather_work_items_return_file_list(*args, **kwargs):
         return MockedFiles._mockFileList()
 
-    def mockGetConfigReturnConfig(*args, **kwargs):
+    def mock_get_config_return_config(*args, **kwargs):
         return MockedFiles._mockConfig()
 
-    def mockParseWorkItemsReturnParsedFileList(*args, **kwargs):
+    def mock_parse_work_items_return_parsed_file_list(*args, **kwargs):
         return MockedFiles._mockParsedFileList()
 
     backlog = helpers.Backlog()
-    backlog._gatherWorkItems = MagicMock(return_value=mockGatherWorkItemsReturnFileList())
-    backlog._getConfig = MagicMock(return_value=mockGetConfigReturnConfig())
-    backlog._parseWorkItems = MagicMock(return_value=mockParseWorkItemsReturnParsedFileList())
+    backlog._gatherWorkItems = MagicMock(return_value=mock_gather_work_items_return_file_list())
+    backlog._getConfig = MagicMock(return_value=mock_get_config_return_config())
+    backlog._parseWorkItems = MagicMock(return_value=mock_parse_work_items_return_parsed_file_list())
     backlog._buildWorkItems = MagicMock(return_value=None)
     backlog._deployGitHub = MagicMock(return_value=None)
     backlog._deployAzure = MagicMock(return_value=None)
@@ -385,9 +384,16 @@ def test_build():
     backlog.build(Namespace(backlog='caf', repo='github', validate_only=None))
     backlog._gatherWorkItems.assert_called_with(StringContains('./workitems/caf'))
     backlog._getConfig.assert_called_with(StringContains('/workitems/caf'))
-    backlog._parseWorkItems.assert_called_with(mockGatherWorkItemsReturnFileList())
-    backlog._buildWorkItems.assert_called_with(mockParseWorkItemsReturnParsedFileList(), mockGetConfigReturnConfig())
+    backlog._parseWorkItems.assert_called_with(mock_gather_work_items_return_file_list())
+    backlog._buildWorkItems.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
     backlog._deployGitHub.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None)
+
+    backlog.build(Namespace(backlog='caf', repo='azure', org='test', validate_only=None))
+    backlog._gatherWorkItems.assert_called_with(StringContains('./workitems/caf'))
+    backlog._getConfig.assert_called_with(StringContains('/workitems/caf'))
+    backlog._parseWorkItems.assert_called_with(mock_gather_work_items_return_file_list())
+    backlog._buildWorkItems.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
+    backlog._deployAzure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None)
 
     backlog._deployGitHub = MagicMock(return_value=None)
     backlog.build(Namespace(validate_only='./validate/foo'))

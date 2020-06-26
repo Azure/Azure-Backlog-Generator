@@ -1,5 +1,5 @@
 # Backlogs
-Azure Backlog Generator currently supports creating backlogs for the following processes.
+AzBacklog currently supports creating backlogs for the following processes.
 
 - [ ] [Cloud Adoption Framework (CAF)](#cloud-adoption-framework-caf)
 - [ ] [Team Foundation Server (TFS) to Azure DevOps](#team-foundation-server-tfs-to-azure-devops)

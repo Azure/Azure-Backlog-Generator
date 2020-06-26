@@ -145,8 +145,8 @@ class Backlog():
         github.deploy(args, workitems)
 
     def _deployAzure(self, args, workitems):
-        # TODO: build out azure devops
-        pass
+        azure = services.AzDevOps(org=args.org, token=args.token)
+        azure.deploy(args, workitems)
 
     def build(self, args):
         if args.validate_only is not None:
@@ -163,3 +163,5 @@ class Backlog():
         if args.validate_only is None:
             if args.repo.lower() == 'github':
                 self._deployGitHub(args, workItems)
+            elif args.repo.lower() == 'azure':
+                self._deployAzure(args, workItems)

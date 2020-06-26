@@ -51,7 +51,8 @@ setup(
     ],
     data_files=getFiles('workitems'),
     install_requires=[
-        'pygithub'
+        'pygithub==1.51',
+        'azure-devops==6.0.0b2'
     ],
     extras_require={
         'dev': requirements

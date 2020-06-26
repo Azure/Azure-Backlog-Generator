@@ -325,6 +325,7 @@ def test_buildTask(fs):
     assert Lists.contains(task.tags, lambda tag: tag.title == "02_Folder") is True
     assert Lists.contains(task.tags, lambda tag: tag.title == "AppDev") is True
 
+
 # TODO: monkeypatch GitHub authentication
 @patch('azbacklog.services.github.GitHub.deploy')
 @patch('github.Github')

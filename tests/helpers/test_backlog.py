@@ -7,8 +7,10 @@ from pyfakefs import fake_filesystem
 import azbacklog.helpers as helpers
 import azbacklog.entities as entities
 import azbacklog.services as services
+from azbacklog.services import AzDevOps
 from tests.helpers import Lists, StringContains
 from tests.mockedfiles import MockedFiles
+from tests.services.test_azure import mock_auth
 
 
 def test_gatherWorkItems(monkeypatch):
@@ -323,7 +325,7 @@ def test_buildTask(fs):
     assert Lists.contains(task.tags, lambda tag: tag.title == "02_Folder") is True
     assert Lists.contains(task.tags, lambda tag: tag.title == "AppDev") is True
 
-
+# TODO: monkeypatch GitHub authentication
 @patch('azbacklog.services.github.GitHub.deploy')
 @patch('github.Github')
 def test_deployGitHub(patched_github, patched_deploy, fs):
@@ -343,14 +345,9 @@ def test_deployGitHub(patched_github, patched_deploy, fs):
 
 
 @patch('azbacklog.services.azure.AzDevOps.deploy')
-@patch('azure.devops.connection.Connection')
-@patch('msrest.authentication.BasicAuthentication')
-def test_deployAzure(patched_auth, patched_connection, patched_deploy, fs):
-    connection_object = MagicMock()
-    connection_object.clients = None
+def test_deployAzure(patched_deploy, fs, monkeypatch):
+    monkeypatch.setattr(services.AzDevOps, "_auth", mock_auth)
 
-    patched_auth.return_value = MagicMock()
-    patched_connection.return_value = connection_object
     patched_deploy.return_value = None
 
     MockedFiles._mockCorrectFileSystem(fs)

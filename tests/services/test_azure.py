@@ -12,6 +12,7 @@ from azbacklog.entities import Tag
 from azbacklog.helpers import Backlog
 from tests.mockedfiles import MockedFiles
 
+
 def mock_auth(*args, **kwargs):
     def mock_get_projects(*args, **kwargs):
         return SimpleNamespace(value=[
@@ -48,7 +49,7 @@ def mock_auth(*args, **kwargs):
         mock = MagicMock()
         mock.create_work_item.return_value = None
         return mock
-        
+
     mock = MagicMock(spec=ClientFactory)
     mock.get_core_client.return_value = mock_get_core_client()
     mock.get_operations_client.return_value = mock_get_operations_client()
@@ -71,12 +72,11 @@ def test_auth(monkeypatch):
     with pytest.raises(ValueError) as exc:
         az = AzDevOps(token='bar')  # NOQA
     assert "incorrect parameters were passed" in str(exc.value)
-    
+
 
 @patch('time.sleep', return_value=None)
 def test_get_project(patched_sleep):
     az = AzDevOps(org='foo', token='bar')
-    project = SimpleNamespace(id=1)
 
     result = az._get_project('foo')
     assert result.id == 1
@@ -84,11 +84,11 @@ def test_get_project(patched_sleep):
     az.clients.reset_mock()
     assert az._get_project('something') is None
     assert az.clients.get_core_client.return_value.get_projects.call_count == 20
-    
+
 
 def test_check_status():
     az = AzDevOps(org='foo', token='bar')
-    
+
     az.clients.get_operations_client.return_value.get_operation.return_value = SimpleNamespace(status='succeeded')
     result = az._check_status(0)
     assert result is True
@@ -104,7 +104,7 @@ def test_check_status():
 
 def test_create_project(monkeypatch):
     az = AzDevOps(org='foo', token='bar')
-    
+
     az._check_status = MagicMock(return_value=True)
     assert az._create_project('foo') is True
 
@@ -123,12 +123,13 @@ def test_get_team():
     assert result.id == 1
     assert az._get_team(project, 'something') is None
 
+
 def test_enable_epics():
     az = AzDevOps(org='foo', token='bar')
     az._get_team = MagicMock(return_value=SimpleNamespace(id=1, project_id=1, name='foo'))
     project = SimpleNamespace(id=1)
 
-    result = az._enable_epics(project, 'foo')
+    az._enable_epics(project, 'foo')
 
     assert az.clients.get_work_client.return_value.update_team_settings.called_with({
         "backlogVisibilities": {
@@ -158,12 +159,12 @@ def test_create_tags():
     result = az._create_tags(tags)
 
     assert result == 'tag1; tag2; tag3'
-    
+
 
 def test_create_work_item():
     az = AzDevOps(org='foo', token='bar')
     project = SimpleNamespace(id=1)
-    
+
     patch = [
         {
             "op": "add",

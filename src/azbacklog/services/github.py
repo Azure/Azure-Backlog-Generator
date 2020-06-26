@@ -4,12 +4,15 @@ from github import Github
 class GitHub():
 
     def __init__(self, username=None, password=None, hostname=None, token=None):
+        self.github = self._auth(username=username, password=password, hostname=hostname, token=token)
+
+    def _auth(self, username=None, password=None, hostname=None, token=None):
         if username is not None and password is not None:
-            self.github = Github(username, password)
+            return Github(username, password)
         elif hostname is not None and token is not None:
-            self.github = Github(base_url=f'https://{hostname}/api/v3', login_or_token=f'{token}')
+            return Github(base_url=f'https://{hostname}/api/v3', login_or_token=f'{token}')
         elif token is not None:
-            self.github = Github(token)
+            return Github(token)
         else:
             raise ValueError("incorrect parameters were passed")
 

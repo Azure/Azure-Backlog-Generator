@@ -8,13 +8,14 @@ import time
 class AzDevOps():
 
     def __init__(self, org=None, token=None):
-        if org is not None and token is not None:
-            self.clients = self._auth(org, token)
-        else:
-            raise ValueError("incorrect parameters were passed")
+        self.clients = self._auth(org, token)
 
     def _auth(self, org, token):
+        if org is None or token is None:
+            raise ValueError("incorrect parameters were passed")
+
         credentials = BasicAuthentication('', token)
+        print(credentials.header)
         connection = Connection(base_url=f'https://dev.azure.com/{org}', creds=credentials)
 
         return connection.clients
@@ -36,15 +37,15 @@ class AzDevOps():
 
     def _check_status(self, ops_id):
         ops_client = self.clients.get_operations_client()
-        done = False
 
-        while (not done):
+        while (True):
             ops_status = ops_client.get_operation(ops_id)
             if ops_status.status == 'cancelled' or ops_status.status == 'failed':
                 return False
-            done = ops_status.status == 'succeeded'
-
-        return True
+            elif ops_status.status == 'succeeded':
+                return True
+            else:
+                time.sleep(3)
 
     def _create_project(self, name):
         core_client = self.clients.get_core_client()

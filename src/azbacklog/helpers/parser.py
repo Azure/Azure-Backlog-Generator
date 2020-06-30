@@ -14,7 +14,7 @@ class Parser():
         except json.JSONDecodeError as exc:
             return (False, exc.args)
 
-    def validString(self, string, allow_empty = False) -> bool:
+    def validString(self, string, allow_empty=False) -> bool:
         if str is not type(string):
             return False
         elif allow_empty is False:

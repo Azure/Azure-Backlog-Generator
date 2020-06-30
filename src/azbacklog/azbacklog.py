@@ -16,7 +16,7 @@ def main():
     parser.add_argument('-r', '--repo', choices=['azure', 'github'], action=RepoAction, help="targetted repository type")
     parser.add_argument('-p', '--project', action=ProjectAction, help="project (repository) name to create")
     parser.add_argument('-o', '--org', action=OrgAction, help="Required if target is Azure DevOps. Optional if a GitHub organization.")
-    parser.add_argument('-b', '--backlog', choices=['caf', 'tfs'], action=BacklogAction, help="type of backlog to create")
+    parser.add_argument('-b', '--backlog', choices=['caf', 'esa'], action=BacklogAction, help="type of backlog to create")
     parser.add_argument('--validate-only', help=argparse.SUPPRESS)
     parser.set_defaults(func=run)
     args = parser.parse_args()
@@ -44,8 +44,7 @@ def main():
         if args.backlog is None:
             args.backlog = input('Choose backlog type to create (see docs): ')
             BacklogAction.validate(parser, args.backlog, args)
-    print(args)
-    quit()
+
     args.func(args)
 
 

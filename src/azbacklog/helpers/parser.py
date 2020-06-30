@@ -14,11 +14,13 @@ class Parser():
         except json.JSONDecodeError as exc:
             return (False, exc.args)
 
-    def validString(self, string) -> bool:
+    def validString(self, string, allow_empty=False) -> bool:
         if str is not type(string):
             return False
-        else:
+        elif allow_empty is False:
             return bool(string and string.strip())
+        else:
+            return True
 
     def fileHierarchy(self, files) -> list:
         parsedFiles = []

@@ -20,7 +20,7 @@ class RepoAction(argparse.Action):
 
     @staticmethod
     def validate(parser, value, namespace):
-        if value.strip() not in ('azure', 'github'):
+        if value.strip().lower() not in ('azure', 'github'):
             parser.error('Repository type must be either \'azure\' or \'github\'')
         return True
 
@@ -56,6 +56,6 @@ class BacklogAction(argparse.Action):
 
     @staticmethod
     def validate(parser, value, namespace):
-        if value.strip() not in ('caf', 'tfs'):
+        if value.strip().lower() not in ('caf', 'esa'):
             parser.error('Backlog must be a valid option')
         return True

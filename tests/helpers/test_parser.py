@@ -23,6 +23,8 @@ def test_validString():
     assert p.validString("") is False
     assert p.validString(10) is False
     assert p.validString("     ") is False
+    assert p.validString("", True) is True
+    assert p.validString("     ", True) is True
 
 
 def test_fileHierarchy():

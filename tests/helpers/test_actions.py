@@ -116,4 +116,4 @@ def test_BacklogAction():
             assert "Backlog must be a valid option" in str(err.read())
 
     assert helpers.BacklogAction.validate(parser, 'caf', None) is True
-    assert helpers.BacklogAction.validate(parser, 'tfs', None) is True
+    assert helpers.BacklogAction.validate(parser, 'esa', None) is True

@@ -15,7 +15,6 @@ class AzDevOps():
             raise ValueError("incorrect parameters were passed")
 
         credentials = BasicAuthentication('', token)
-        print(credentials.header)
         connection = Connection(base_url=f'https://dev.azure.com/{org}', creds=credentials)
 
         return connection.clients

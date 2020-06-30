@@ -66,9 +66,9 @@ def test_validateTitle():
 def test_validateDescription():
     v = helpers.Validation()
     assert v._validateDescription('./somepath/metadata.json', {}) == (False, "'description' property not found in metadata './somepath/metadata.json'")
-    assert v._validateDescription('./somepath/metadata.json', {'description': ''}) == (False, "'description' property not formatted correctly in metadata './somepath/metadata.json'")
+    assert v._validateDescription('./somepath/metadata.json', {'description': ''}) == (True)
     assert v._validateDescription('./somepath/metadata.json', {'description': 10}) == (False, "'description' property not formatted correctly in metadata './somepath/metadata.json'")
-    assert v._validateDescription('./somepath/metadata.json', {'description': '     '}) == (False, "'description' property not formatted correctly in metadata './somepath/metadata.json'")
+    assert v._validateDescription('./somepath/metadata.json', {'description': '     '}) == (True)
     assert v._validateDescription('./somepath/metadata.json', {'description': 'lorem ipsum'}) == (True)
 
 

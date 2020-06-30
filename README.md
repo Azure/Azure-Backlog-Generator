@@ -12,8 +12,12 @@ When conducting intense processes, it can be helpful to have a list of tasks to 
 ## Currently Supported Backlogs
 AzBacklog currently supports creating backlogs for the following processes.
 
-- [ ] [Cloud Adoption Framework (CAF)](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#cloud-adoption-framework-caf)
-- [ ] [Team Foundation Server (TFS) to Azure DevOps](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#team-foundation-server-tfs-to-azure-devops)
+| Backlog      | Command-line Option (see below: `-b`)        |
+|--------------|---------------|
+| [Cloud Adoption Framework (CAF)](https://github.com/Azure/Azure-Backlog-Generator/blob/master/backlogs.md#cloud-adoption-framework-caf)        | `caf`      |
+| [Enterprise-scale Architecture](https://github.com/Azure/Azure-Backlog-Generator/blob/master/backlogs.md#enterprise-scale-architecture)     | `esa`     |
+| _(Coming Soon)_ [Team Foundation Server (TFS) to Azure DevOps](https://github.com/Azure/Azure-Backlog-Generator/blob/master/backlogs.md#team-foundation-server-tfs-to-azure-devops)   | `tfs`        |
+
 
 ## Execution
 Prior to execution, please take a moment to fully read through the documentation below.
@@ -43,7 +47,7 @@ optional arguments:
   -p PROJECT, --project PROJECT                     project (repository) name to create
   -o ORG, --org ORG                                 REQUIRED. if target is Azure DevOps
                                                     OPTIONAL. if a GitHub organization
-  -b {caf,tfs}, --backlog {caf,tfs}                 type of backlog to create
+  -b {caf,esa}, --backlog {caf,esa}                 type of backlog to create
 
 ```
 

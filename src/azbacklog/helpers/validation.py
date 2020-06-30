@@ -13,7 +13,7 @@ class Validation():
     def _validateDescription(self, path, meta) -> []:
         if "description" not in meta:
             return (False, f"'description' property not found in metadata '{path}'")
-        if not Parser().validString(meta["description"]):
+        if not Parser().validString(meta["description"], True):
             return (False, f"'description' property not formatted correctly in metadata '{path}'")
         return True
 

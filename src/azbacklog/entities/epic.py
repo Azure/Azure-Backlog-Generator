@@ -33,7 +33,7 @@ class Epic():
     def features(self) -> List[Feature]:
         return self._features
 
-    def addFeature(self, value: Feature):
+    def add_feature(self, value: Feature):
         if not isinstance(value, Feature):
             raise TypeError("value must be of type 'Feature'")
         self._features.append(value)
@@ -42,7 +42,7 @@ class Epic():
     def tags(self) -> List[Tag]:
         return self._tags
 
-    def addTag(self, value: Tag):
+    def add_tag(self, value: Tag):
         if not isinstance(value, Tag):
             raise TypeError("value must be of type 'Tag'")
         self._tags.append(value)

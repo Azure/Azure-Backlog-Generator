@@ -30,10 +30,10 @@ class Feature():
         self._description = value
 
     @property
-    def userStories(self) -> List[UserStory]:
+    def userstories(self) -> List[UserStory]:
         return self._userStories
 
-    def addUserStory(self, value: UserStory):
+    def add_userstory(self, value: UserStory):
         if not isinstance(value, UserStory):
             raise TypeError("value must be of type 'UserStory'")
         self._userStories.append(value)
@@ -42,7 +42,7 @@ class Feature():
     def tags(self) -> List[Tag]:
         return self._tags
 
-    def addTag(self, value: Tag):
+    def add_tag(self, value: Tag):
         if not isinstance(value, Tag):
             raise TypeError("value must be of type 'Tag'")
         self._tags.append(value)

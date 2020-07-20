@@ -31,7 +31,7 @@ class Task():
     def tags(self) -> List[Tag]:
         return self._tags
 
-    def addTag(self, value: Tag):
+    def add_tag(self, value: Tag):
         if not isinstance(value, Tag):
             raise TypeError("value must be of type 'Tag'")
         self._tags.append(value)

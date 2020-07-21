@@ -3,6 +3,7 @@ class MockedFiles():
     def _mock_correct_file_system(fs):
         fs.create_file('./workitems/correct/config.json',
                        contents='{ \
+                                    "description": "Sample description", \
                                     "tags" : [ \
                                         "01_Folder", \
                                         "02_Folder", \
@@ -196,6 +197,7 @@ class MockedFiles():
     @staticmethod
     def _mock_config():
         return {
+            "description": 'Sample description',
             "tags": [
                 "01_Folder",
                 "02_Folder",

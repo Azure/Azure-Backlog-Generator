@@ -140,13 +140,13 @@ class Backlog():
         else:
             return None
 
-    def _deploy_github(self, args, workitems):
+    def _deploy_github(self, args, workitems, config):
         github = services.GitHub(token=args.token)
-        github.deploy(args, workitems)
+        github.deploy(args, workitems, config)
 
-    def _deploy_azure(self, args, workitems):
+    def _deploy_azure(self, args, workitems, config):
         azure = services.AzDevOps(org=args.org, token=args.token)
-        azure.deploy(args, workitems)
+        azure.deploy(args, workitems, config)
 
     def build(self, args):
         if args.validate_only is not None:
@@ -162,6 +162,6 @@ class Backlog():
 
         if args.validate_only is None:
             if args.repo.lower() == 'github':
-                self._deploy_github(args, work_items)
+                self._deploy_github(args, work_items, config)
             elif args.repo.lower() == 'azure':
-                self._deploy_azure(args, work_items)
+                self._deploy_azure(args, work_items, config)

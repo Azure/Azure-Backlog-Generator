@@ -73,18 +73,18 @@ def test_create_user_repo(mock_Github):
     gh = GitHub(token='foo')
     gh.github = mock_Github
     user = gh._get_user()
-    gh._create_user_repo('testRepo')
+    gh._create_user_repo('testRepo', 'foobar')
 
-    user.create_repo.assert_called_with(name='testRepo', has_issues=True, auto_init=True, private=True)
+    user.create_repo.assert_called_with(name='testRepo', description='foobar', has_issues=True, auto_init=True, private=True)
 
 
 def test_create_org_repo(mock_Github):
     gh = GitHub(token='foo')
     gh.github = mock_Github
     org = gh._get_org('testOrg')
-    gh._create_org_repo('testOrg', 'testRepo')
+    gh._create_org_repo('testOrg', 'testRepo', 'foobar')
 
-    org.create_repo.assert_called_with(name='testRepo', has_issues=True, auto_init=True, private=True)
+    org.create_repo.assert_called_with(name='testRepo', description='foobar', has_issues=True, auto_init=True, private=True)
 
 
 def test_create_project(mock_Github):
@@ -253,8 +253,8 @@ def test_deploy_with_org(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    gh.deploy(args, work_items)
-    gh._create_org_repo.assert_called_with('testOrg', 'testProject')
+    gh.deploy(args, work_items, config)
+    gh._create_org_repo.assert_called_with('testOrg', 'testProject', 'Sample description')
 
     gh._delete_labels.assert_called()
     assert gh._create_project.call_count == 4
@@ -291,8 +291,8 @@ def test_deploy_with_repo(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    gh.deploy(args, work_items)
-    gh._create_user_repo.assert_called_with('testProject')
+    gh.deploy(args, work_items, config)
+    gh._create_user_repo.assert_called_with('testProject', 'Sample description')
 
     gh._delete_labels.assert_called()
     assert gh._create_project.call_count == 4

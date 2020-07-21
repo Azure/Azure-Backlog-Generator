@@ -67,6 +67,7 @@ class Validation():
 
     def validate_config(self, path, json) -> []:
         allowed_config = [
+            "description",
             "tags",
             "roles"
         ]

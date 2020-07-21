@@ -22,11 +22,11 @@ class GitHub():
     def _get_org(self, orgName):
         return self.github.get_organization(orgName)
 
-    def _create_user_repo(self, name):
-        return self._get_user().create_repo(name=f'{name}', has_issues=True, auto_init=True, private=True)
+    def _create_user_repo(self, name, desc):
+        return self._get_user().create_repo(name=name, description=desc, has_issues=True, auto_init=True, private=True)
 
-    def _create_org_repo(self, org, name):
-        return self._get_org(org).create_repo(name=f'{name}', has_issues=True, auto_init=True, private=True)
+    def _create_org_repo(self, org, name, desc):
+        return self._get_org(org).create_repo(name=name, description=desc, has_issues=True, auto_init=True, private=True)
 
     def _create_project(self, repo, name, body):
         return repo.create_project(name, body=body)
@@ -80,13 +80,13 @@ class GitHub():
 
         return desc
 
-    def deploy(self, config, workitems):
-        if config.org is not None:
-            print("┌── Creating repo (" + config.org + "/" + config.project + ")...")
-            repo = self._create_org_repo(config.org, config.project)
+    def deploy(self, args, workitems, config):
+        if args.org is not None:
+            print("┌── Creating repo (" + args.org + "/" + args.project + ")...")
+            repo = self._create_org_repo(args.org, args.project, config["description"])
         else:
-            print("┌── Creating repo (" + config.repo + "/" + config.project + ")...")
-            repo = self._create_user_repo(config.project)
+            print("┌── Creating repo (" + args.repo + "/" + args.project + ")...")
+            repo = self._create_user_repo(args.project, config["description"])
 
         print("├── Deleting default labels...")
         self._delete_labels(repo)

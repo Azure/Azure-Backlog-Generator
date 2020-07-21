@@ -341,8 +341,8 @@ def test_deploy_github(patched_github, patched_deploy, fs):
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deploy_github(args, work_items)
-    patched_deploy.assert_called_with(args, work_items)
+    backlog._deploy_github(args, work_items, config)
+    patched_deploy.assert_called_with(args, work_items, config)
 
 
 @patch('azbacklog.services.azure.AzDevOps.deploy')
@@ -359,8 +359,8 @@ def test_deploy_azure(patched_deploy, fs, monkeypatch):
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deploy_azure(args, work_items)
-    patched_deploy.assert_called_with(args, work_items)
+    backlog._deploy_azure(args, work_items, config)
+    patched_deploy.assert_called_with(args, work_items, config)
 
 
 def test_build():
@@ -386,14 +386,14 @@ def test_build():
     backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
     backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None)
+    backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None, mock_get_config_return_config())
 
     backlog.build(Namespace(backlog='caf', repo='azure', org='test', validate_only=None))
     backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
     backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
     backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None)
+    backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None, mock_get_config_return_config())
 
     backlog._deploy_github = MagicMock(return_value=None)
     backlog.build(Namespace(validate_only='./validate/foo'))

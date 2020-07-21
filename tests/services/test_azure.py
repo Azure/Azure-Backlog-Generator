@@ -106,11 +106,11 @@ def test_create_project(monkeypatch):
     az = AzDevOps(org='foo', token='bar')
 
     az._check_status = MagicMock(return_value=True)
-    assert az._create_project('foo') is True
+    assert az._create_project('foo', 'bar') is True
 
     az._check_status = MagicMock(return_value=False)
     with pytest.raises(RuntimeError) as exc:
-        az._create_project('bar')
+        az._create_project('foo', 'bar')
     assert "failed creating project" in str(exc.value)
 
 
@@ -246,9 +246,9 @@ def test_deploy(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    az.deploy(args, work_items)
+    az.deploy(args, work_items, config)
 
-    az._create_project.assert_called_with('testProject')
+    az._create_project.assert_called_with('testProject', 'Sample description')
     az._enable_epics.assert_called()
 
     assert az._create_work_item.call_count == 20

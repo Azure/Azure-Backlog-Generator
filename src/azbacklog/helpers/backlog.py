@@ -13,7 +13,7 @@ class Backlog():
 
         return files
 
-    def _getConfig(self, path):
+    def _get_config(self, path):
         fs = FileSystem()
         content = fs.readFile(path + '/config.json')
 
@@ -47,7 +47,7 @@ class Backlog():
         else:
             raise ValueError(f"metadata not valid: {validateResult[1]}")
 
-    def _buildWorkItems(self, parsedFiles, config):
+    def _build_work_items(self, parsedFiles, config):
         epics = []
         for epic in parsedFiles:
             builtEpic = self._buildEpic(epic, config)
@@ -69,15 +69,15 @@ class Backlog():
             epic.title = json["title"]
             epic.description = json["description"]
             for tag in json["tags"]:
-                epic.addTag(self._createTag(tag))
+                epic.add_tag(self._createTag(tag))
             for role in json["roles"]:
-                epic.addTag(self._createTag(role))
+                epic.add_tag(self._createTag(role))
 
             if "features" in item.keys() and len(item["features"]) > 0:
                 for feature in item["features"]:
                     builtFeature = self._buildFeature(feature, config)
                     if builtFeature is not None:
-                        epic.addFeature(builtFeature)
+                        epic.add_feature(builtFeature)
 
             return epic
         else:
@@ -90,15 +90,15 @@ class Backlog():
             feature.title = json["title"]
             feature.description = json["description"]
             for tag in json["tags"]:
-                feature.addTag(self._createTag(tag))
+                feature.add_tag(self._createTag(tag))
             for role in json["roles"]:
-                feature.addTag(self._createTag(role))
+                feature.add_tag(self._createTag(role))
 
             if "stories" in item.keys() and len(item["stories"]) > 0:
                 for story in item["stories"]:
                     builtStory = self._buildStory(story, config)
                     if builtStory is not None:
-                        feature.addUserStory(builtStory)
+                        feature.add_userstory(builtStory)
 
             return feature
         else:
@@ -111,15 +111,15 @@ class Backlog():
             story.title = json["title"]
             story.description = json["description"]
             for tag in json["tags"]:
-                story.addTag(self._createTag(tag))
+                story.add_tag(self._createTag(tag))
             for role in json["roles"]:
-                story.addTag(self._createTag(role))
+                story.add_tag(self._createTag(role))
 
             if "tasks" in item.keys() and len(item["tasks"]) > 0:
                 for task in item["tasks"]:
                     builtTask = self._buildTask(task, config)
                     if builtTask is not None:
-                        story.addTask(builtTask)
+                        story.add_task(builtTask)
 
             return story
         else:
@@ -132,9 +132,9 @@ class Backlog():
             task.title = json["title"]
             task.description = json["description"]
             for tag in json["tags"]:
-                task.addTag(self._createTag(tag))
+                task.add_tag(self._createTag(tag))
             for role in json["roles"]:
-                task.addTag(self._createTag(role))
+                task.add_tag(self._createTag(role))
 
             return task
         else:

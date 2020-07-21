@@ -1,6 +1,6 @@
 class MockedFiles():
     @staticmethod
-    def _mockCorrectFileSystem(fs):
+    def _mock_correct_file_system(fs):
         fs.create_file('./workitems/correct/config.json',
                        contents='{ \
                                     "tags" : [ \
@@ -157,17 +157,17 @@ class MockedFiles():
                                 }')
 
     @staticmethod
-    def _mockParentPathHasFileFileSystem(fs):
+    def _mock_parent_path_has_file_file_system(fs):
         fs.create_file('./parentPathHasFile/metadata.json')
         fs.create_file('./parentPathHasFile/01_folder/metadata.json')
         fs.create_file('./parentPathHasFile/01_folder/01_folder/metadata.json')
 
     @staticmethod
-    def _mockPathHasNoMetadataFileSystem(fs):
+    def _mock_path_has_no_metadata_file_system(fs):
         fs.create_file('./pathHasNoMetadata/01_folder/01_folder/metadata.json')
 
     @staticmethod
-    def _mockFileList():
+    def _mock_file_list():
         files = [
             './workitems/correct/01_epic/metadata.json',
             './workitems/correct/01_epic/01_feature/metadata.json',
@@ -194,7 +194,7 @@ class MockedFiles():
         return files
 
     @staticmethod
-    def _mockConfig():
+    def _mock_config():
         return {
             "tags": [
                 "01_Folder",
@@ -208,7 +208,7 @@ class MockedFiles():
         }
 
     @staticmethod
-    def _mockParsedFileList():
+    def _mock_parsed_file_list():
         result = [
             {
                 'epic': './workitems/correct/01_epic/metadata.json',

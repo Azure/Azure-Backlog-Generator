@@ -13,23 +13,23 @@ from tests.mockedfiles import MockedFiles
 from tests.services.test_azure import mock_auth
 
 
-def test_gatherWorkItems(monkeypatch):
-    def mockGatherWorkItemsReturnFileList(*args, **kwargs):
-        return MockedFiles._mockFileList()
+def test_gather_work_items(monkeypatch):
+    def mock_gather_work_items_returns_file_list(*args, **kwargs):
+        return MockedFiles._mock_file_list()
 
-    monkeypatch.setattr(helpers.FileSystem, "getFiles", mockGatherWorkItemsReturnFileList)
+    monkeypatch.setattr(helpers.FileSystem, "get_files", mock_gather_work_items_returns_file_list)
 
     backlog = helpers.Backlog()
-    assert backlog._gatherWorkItems('.') == MockedFiles._mockFileList()
+    assert backlog._gather_work_items('.') == MockedFiles._mock_file_list()
 
 
-def test_getConfig(monkeypatch, fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_get_config(monkeypatch, fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockFileSystemReadFileReturnNone(*args, **kwargs):
+    def mock_file_system_read_file_returns_None(*args, **kwargs):
         return None
 
-    def mockParserJsonReturnJson(*args, **kwargs):
+    def mock_parser_json_returns_json(*args, **kwargs):
         content = None
         with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
@@ -37,43 +37,43 @@ def test_getConfig(monkeypatch, fs):
 
         return json.loads(content)
 
-    def mockValidationValidateConfigReturnTrue(*args, **kwargs):
+    def mock_validation_validate_config_returns_True(*args, **kwargs):
         return True
 
-    def mockValidationValidateConfigRaiseError(*args, **kwargs):
+    def mock_validation_validate_config_raises_error(*args, **kwargs):
         return (False, "there's an error")
 
-    monkeypatch.setattr(helpers.FileSystem, "readFile", mockFileSystemReadFileReturnNone)
-    monkeypatch.setattr(helpers.Parser, "json", mockParserJsonReturnJson)
+    monkeypatch.setattr(helpers.FileSystem, "read_file", mock_file_system_read_file_returns_None)
+    monkeypatch.setattr(helpers.Parser, "parse_json", mock_parser_json_returns_json)
 
     backlog = helpers.Backlog()
 
-    monkeypatch.setattr(helpers.Validation, "validateConfig", mockValidationValidateConfigReturnTrue)
-    assert backlog._getConfig('.') == mockParserJsonReturnJson()
+    monkeypatch.setattr(helpers.Validation, "validate_config", mock_validation_validate_config_returns_True)
+    assert backlog._get_config('.') == mock_parser_json_returns_json()
 
-    monkeypatch.setattr(helpers.Validation, "validateConfig", mockValidationValidateConfigRaiseError)
+    monkeypatch.setattr(helpers.Validation, "validate_config", mock_validation_validate_config_raises_error)
     with pytest.raises(ValueError) as exc:
-        backlog._getConfig('.')
+        backlog._get_config('.')
     assert "configuration file not valid: there's an error" in str(exc.value)
 
 
-def test_parseWorkItems(monkeypatch):
-    def mockParseWorkItemsReturnFileList(*args, **kwargs):
-        return MockedFiles._mockParsedFileList()
+def test_parse_work_items(monkeypatch):
+    def mock_parse_work_items_returns_file_list(*args, **kwargs):
+        return MockedFiles._mock_parsed_file_list()
 
-    monkeypatch.setattr(helpers.Parser, "fileHierarchy", mockParseWorkItemsReturnFileList)
+    monkeypatch.setattr(helpers.Parser, "parse_file_hierarchy", mock_parse_work_items_returns_file_list)
 
     backlog = helpers.Backlog()
-    assert backlog._parseWorkItems('.') == MockedFiles._mockParsedFileList()
+    assert backlog._parse_work_items('.') == MockedFiles._mock_parsed_file_list()
 
 
-def test_getAndValidateJson(monkeypatch, fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_get_and_validate_json(monkeypatch, fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockFileSystemReadFileReturnNone(*args, **kwargs):
+    def mock_file_system_read_file_returns_None(*args, **kwargs):
         return None
 
-    def mockParserJsonReturnJson(*args, **kwargs):
+    def mock_parser_json_returns_json(*args, **kwargs):
         content = None
         with open('./workitems/correct/01_epic/metadata.json', 'r') as reader:
             content = reader.read()
@@ -81,60 +81,60 @@ def test_getAndValidateJson(monkeypatch, fs):
 
         return json.loads(content)
 
-    def mockValidationValidateMetadataReturnTrue(*args, **kwargs):
+    def mock_validation_validate_metadata_returns_True(*args, **kwargs):
         return True
 
-    def mockValidationValidateMetadataReturnFalse(*args, **kwargs):
+    def mock_validation_validate_metadata_returns_False(*args, **kwargs):
         return (False, "there's an error")
 
-    monkeypatch.setattr(helpers.FileSystem, "readFile", mockFileSystemReadFileReturnNone)
-    monkeypatch.setattr(helpers.Parser, "json", mockParserJsonReturnJson)
+    monkeypatch.setattr(helpers.FileSystem, "read_file", mock_file_system_read_file_returns_None)
+    monkeypatch.setattr(helpers.Parser, "parse_json", mock_parser_json_returns_json)
 
     backlog = helpers.Backlog()
 
-    monkeypatch.setattr(helpers.Validation, "validateMetadata", mockValidationValidateMetadataReturnTrue)
-    assert backlog._getAndValidateJson('.', MockedFiles._mockConfig()) == mockParserJsonReturnJson()
+    monkeypatch.setattr(helpers.Validation, "validate_metadata", mock_validation_validate_metadata_returns_True)
+    assert backlog._get_and_validate_json('.', MockedFiles._mock_config()) == mock_parser_json_returns_json()
 
-    monkeypatch.setattr(helpers.Validation, "validateMetadata", mockValidationValidateMetadataReturnFalse)
+    monkeypatch.setattr(helpers.Validation, "validate_metadata", mock_validation_validate_metadata_returns_False)
     with pytest.raises(ValueError) as exc:
-        backlog._getAndValidateJson('.', MockedFiles._mockConfig())
+        backlog._get_and_validate_json('.', MockedFiles._mock_config())
     assert "metadata not valid: there's an error" in str(exc.value)
 
 
-def test_buildWorkItems(fs):
+def test_build_work_items(fs):
 
     backlog = helpers.Backlog()
-    backlog._buildEpic = MagicMock(return_value=None)
-    workitems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), MockedFiles._mockConfig())
+    backlog._build_epic = MagicMock(return_value=None)
+    work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), MockedFiles._mock_config())
 
-    backlog._buildEpic.assert_any_call(MockedFiles._mockParsedFileList()[0], MockedFiles._mockConfig())
-    backlog._buildEpic.assert_any_call(MockedFiles._mockParsedFileList()[1], MockedFiles._mockConfig())
-    backlog._buildEpic.assert_any_call(MockedFiles._mockParsedFileList()[2], MockedFiles._mockConfig())
-    assert workitems == []
+    backlog._build_epic.assert_any_call(MockedFiles._mock_parsed_file_list()[0], MockedFiles._mock_config())
+    backlog._build_epic.assert_any_call(MockedFiles._mock_parsed_file_list()[1], MockedFiles._mock_config())
+    backlog._build_epic.assert_any_call(MockedFiles._mock_parsed_file_list()[2], MockedFiles._mock_config())
+    assert work_items == []
 
     epic = entities.Epic()
     epic.title = "Foobar"
     epic.description = "Some Description"
-    backlog._buildEpic = MagicMock(return_value=epic)
-    workitems = backlog._buildWorkItems([MockedFiles._mockParsedFileList()[0]], MockedFiles._mockConfig())
-    assert len(workitems) == 1
-    assert workitems[0] == epic
-    assert workitems[0].title == "Foobar"
-    assert workitems[0].description == "Some Description"
+    backlog._build_epic = MagicMock(return_value=epic)
+    work_items = backlog._build_work_items([MockedFiles._mock_parsed_file_list()[0]], MockedFiles._mock_config())
+    assert len(work_items) == 1
+    assert work_items[0] == epic
+    assert work_items[0].title == "Foobar"
+    assert work_items[0].description == "Some Description"
 
 
-def test_createTag(fs):
+def test_create_tag(fs):
     backlog = helpers.Backlog()
-    tag = backlog._createTag("foo bar")
+    tag = backlog._create_tag("foo bar")
 
     assert isinstance(tag, entities.Tag) is True
     assert tag.title == "foo bar"
 
 
-def test_buildEpic(fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_build_epic(fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockGetConfigReturnConfig(*args, **kwargs):
+    def mock_get_config_returns_config(*args, **kwargs):
         content = None
         with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
@@ -142,7 +142,7 @@ def test_buildEpic(fs):
 
         return json.loads(content)
 
-    def mockParserJsonReturnEpicJson(*args, **kwargs):
+    def mock_parser_parse_json_returns_epic_json(*args, **kwargs):
         content = None
         with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
@@ -150,7 +150,7 @@ def test_buildEpic(fs):
 
         return json.loads(content)
 
-    def mockBacklogBuildFeatureReturnFeature(*args, **kwargs):
+    def mock_backlog_build_feature_returns_feature(*args, **kwargs):
         feature = entities.Feature()
         feature.title = "Some Feature"
         feature.description = "Some Description"
@@ -159,13 +159,13 @@ def test_buildEpic(fs):
 
     backlog = helpers.Backlog()
 
-    backlog._getAndValidateJson = MagicMock(return_value=False)
-    epic = backlog._buildEpic(MockedFiles._mockParsedFileList()[0], mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=False)
+    epic = backlog._build_epic(MockedFiles._mock_parsed_file_list()[0], mock_get_config_returns_config())
     assert epic is None
 
-    backlog._getAndValidateJson = MagicMock(return_value=mockParserJsonReturnEpicJson())
-    backlog._buildFeature = MagicMock(return_value=None)
-    epic = backlog._buildEpic(MockedFiles._mockParsedFileList()[0], mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=mock_parser_parse_json_returns_epic_json())
+    backlog._build_feature = MagicMock(return_value=None)
+    epic = backlog._build_epic(MockedFiles._mock_parsed_file_list()[0], mock_get_config_returns_config())
     assert epic.title == "Foo bar"
     assert epic.description == "Lorem Ipsum 01_folder/02_folder"
     assert len(epic.tags) == 3
@@ -174,17 +174,17 @@ def test_buildEpic(fs):
     assert Lists.contains(epic.tags, lambda tag: tag.title == "AppDev") is True
     assert len(epic.features) == 0
 
-    backlog._buildFeature = MagicMock(return_value=mockBacklogBuildFeatureReturnFeature())
-    epic = backlog._buildEpic(MockedFiles._mockParsedFileList()[0], mockGetConfigReturnConfig())
+    backlog._build_feature = MagicMock(return_value=mock_backlog_build_feature_returns_feature())
+    epic = backlog._build_epic(MockedFiles._mock_parsed_file_list()[0], mock_get_config_returns_config())
     assert len(epic.features) == 3  # should return 3 instances of the mocked feature since the mocked epic has 3 features
     assert epic.features[0].title == "Some Feature"
     assert epic.features[0].description == "Some Description"
 
 
-def test_buildFeature(fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_build_feature(fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockGetConfigReturnConfig(*args, **kwargs):
+    def mock_get_config_returns_config(*args, **kwargs):
         content = None
         with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
@@ -192,7 +192,7 @@ def test_buildFeature(fs):
 
         return json.loads(content)
 
-    def mockParserJsonReturnFeatureJson(*args, **kwargs):
+    def mock_parser_parse_json_returns_feature_json(*args, **kwargs):
         content = None
         with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
@@ -200,44 +200,44 @@ def test_buildFeature(fs):
 
         return json.loads(content)
 
-    def mockBacklogBuildStoryReturnStory(*args, **kwargs):
+    def mock_backlog_build_story_returns_story(*args, **kwargs):
         story = entities.UserStory()
         story.title = "Some Story"
         story.description = "Some Description"
 
         return story
 
-    def mockFeature(*args, **kwargs):
-        return MockedFiles._mockParsedFileList()[0]["features"][0]
+    def mock_feature(*args, **kwargs):
+        return MockedFiles._mock_parsed_file_list()[0]["features"][0]
 
     backlog = helpers.Backlog()
 
-    backlog._getAndValidateJson = MagicMock(return_value=False)
-    feature = backlog._buildFeature(mockFeature(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=False)
+    feature = backlog._build_feature(mock_feature(), mock_get_config_returns_config())
     assert feature is None
 
-    backlog._getAndValidateJson = MagicMock(return_value=mockParserJsonReturnFeatureJson())
-    backlog._buildStory = MagicMock(return_value=None)
-    feature = backlog._buildFeature(mockFeature(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=mock_parser_parse_json_returns_feature_json())
+    backlog._build_story = MagicMock(return_value=None)
+    feature = backlog._build_feature(mock_feature(), mock_get_config_returns_config())
     assert feature.title == "Foo bar"
     assert feature.description == "Lorem Ipsum 01_folder/02_folder"
     assert len(feature.tags) == 3
     assert Lists.contains(feature.tags, lambda tag: tag.title == "01_Folder") is True
     assert Lists.contains(feature.tags, lambda tag: tag.title == "02_Folder") is True
     assert Lists.contains(feature.tags, lambda tag: tag.title == "AppDev") is True
-    assert len(feature.userStories) == 0
+    assert len(feature.userstories) == 0
 
-    backlog._buildStory = MagicMock(return_value=mockBacklogBuildStoryReturnStory())
-    feature = backlog._buildFeature(mockFeature(), mockGetConfigReturnConfig())
-    assert len(feature.userStories) == 2  # should return 2 instances of the mocked feature since the mocked feature has 2 user stories
-    assert feature.userStories[0].title == "Some Story"
-    assert feature.userStories[0].description == "Some Description"
+    backlog._build_story = MagicMock(return_value=mock_backlog_build_story_returns_story())
+    feature = backlog._build_feature(mock_feature(), mock_get_config_returns_config())
+    assert len(feature.userstories) == 2  # should return 2 instances of the mocked feature since the mocked feature has 2 user stories
+    assert feature.userstories[0].title == "Some Story"
+    assert feature.userstories[0].description == "Some Description"
 
 
-def test_buildStory(fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_build_story(fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockGetConfigReturnConfig(*args, **kwargs):
+    def mock_get_config_returns_config(*args, **kwargs):
         content = None
         with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
@@ -245,7 +245,7 @@ def test_buildStory(fs):
 
         return json.loads(content)
 
-    def mockParserJsonReturnUserStoryJson(*args, **kwargs):
+    def mock_parser_parse_json_returns_userstory_Json(*args, **kwargs):
         content = None
         with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
@@ -253,25 +253,25 @@ def test_buildStory(fs):
 
         return json.loads(content)
 
-    def mockBacklogBuildTaskReturnTask(*args, **kwargs):
+    def mock_backlog_build_task_returns_task(*args, **kwargs):
         task = entities.Task()
         task.title = "Some Task"
         task.description = "Some Description"
 
         return task
 
-    def mockUserStory(*args, **kwargs):
-        return MockedFiles._mockParsedFileList()[0]["features"][0]["stories"][0]
+    def mock_userstory(*args, **kwargs):
+        return MockedFiles._mock_parsed_file_list()[0]["features"][0]["stories"][0]
 
     backlog = helpers.Backlog()
 
-    backlog._getAndValidateJson = MagicMock(return_value=False)
-    story = backlog._buildStory(mockUserStory(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=False)
+    story = backlog._build_story(mock_userstory(), mock_get_config_returns_config())
     assert story is None
 
-    backlog._getAndValidateJson = MagicMock(return_value=mockParserJsonReturnUserStoryJson())
-    backlog._buildTask = MagicMock(return_value=None)
-    story = backlog._buildStory(mockUserStory(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=mock_parser_parse_json_returns_userstory_Json())
+    backlog._build_task = MagicMock(return_value=None)
+    story = backlog._build_story(mock_userstory(), mock_get_config_returns_config())
     assert story.title == "Foo bar"
     assert story.description == "Lorem Ipsum 01_folder/02_folder"
     assert len(story.tags) == 3
@@ -280,18 +280,18 @@ def test_buildStory(fs):
     assert Lists.contains(story.tags, lambda tag: tag.title == "AppDev") is True
     assert len(story.tasks) == 0
 
-    backlog._buildTask = MagicMock(return_value=mockBacklogBuildTaskReturnTask())
-    story = backlog._buildStory(mockUserStory(), mockGetConfigReturnConfig())
-    print(mockUserStory())
+    backlog._build_task = MagicMock(return_value=mock_backlog_build_task_returns_task())
+    story = backlog._build_story(mock_userstory(), mock_get_config_returns_config())
+    print(mock_userstory())
     assert len(story.tasks) == 2  # should return 2 instances of the mocked story since the mocked story has 2 tasks
     assert story.tasks[0].title == "Some Task"
     assert story.tasks[0].description == "Some Description"
 
 
-def test_buildTask(fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+def test_build_task(fs):
+    MockedFiles._mock_correct_file_system(fs)
 
-    def mockGetConfigReturnConfig(*args, **kwargs):
+    def mock_get_config_returns_config(*args, **kwargs):
         content = None
         with open('./workitems/correct/config.json', 'r') as reader:
             content = reader.read()
@@ -299,7 +299,7 @@ def test_buildTask(fs):
 
         return json.loads(content)
 
-    def mockParserJsonReturnTaskJson(*args, **kwargs):
+    def mock_parser_parse_json_returns_task_json(*args, **kwargs):
         content = None
         with open('./workitems/correct/01_epic/02_feature/metadata.json', 'r') as reader:
             content = reader.read()
@@ -307,17 +307,17 @@ def test_buildTask(fs):
 
         return json.loads(content)
 
-    def mockTask(*args, **kwargs):
-        return MockedFiles._mockParsedFileList()[0]["features"][0]["stories"][0]["tasks"][0]
+    def mock_task(*args, **kwargs):
+        return MockedFiles._mock_parsed_file_list()[0]["features"][0]["stories"][0]["tasks"][0]
 
     backlog = helpers.Backlog()
 
-    backlog._getAndValidateJson = MagicMock(return_value=False)
-    task = backlog._buildTask(mockTask(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=False)
+    task = backlog._build_task(mock_task(), mock_get_config_returns_config())
     assert task is None
 
-    backlog._getAndValidateJson = MagicMock(return_value=mockParserJsonReturnTaskJson())
-    task = backlog._buildTask(mockTask(), mockGetConfigReturnConfig())
+    backlog._get_and_validate_json = MagicMock(return_value=mock_parser_parse_json_returns_task_json())
+    task = backlog._build_task(mock_task(), mock_get_config_returns_config())
     assert task.title == "Foo bar"
     assert task.description == "Lorem Ipsum 01_folder/02_folder"
     assert len(task.tags) == 3
@@ -329,74 +329,74 @@ def test_buildTask(fs):
 # TODO: monkeypatch GitHub authentication
 @patch('azbacklog.services.github.GitHub.deploy')
 @patch('github.Github')
-def test_deployGitHub(patched_github, patched_deploy, fs):
+def test_deploy_github(patched_github, patched_deploy, fs):
     patched_github.return_value = MagicMock()
     patched_deploy.return_value = None
 
-    MockedFiles._mockCorrectFileSystem(fs)
+    MockedFiles._mock_correct_file_system(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._getConfig('workitems/correct')
-    workItems = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
+    config = backlog._get_config('workitems/correct')
+    work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deployGitHub(args, workItems)
-    patched_deploy.assert_called_with(args, workItems)
+    backlog._deploy_github(args, work_items)
+    patched_deploy.assert_called_with(args, work_items)
 
 
 @patch('azbacklog.services.azure.AzDevOps.deploy')
-def test_deployAzure(patched_deploy, fs, monkeypatch):
+def test_deploy_azure(patched_deploy, fs, monkeypatch):
     monkeypatch.setattr(services.AzDevOps, "_auth", mock_auth)
 
     patched_deploy.return_value = None
 
-    MockedFiles._mockCorrectFileSystem(fs)
+    MockedFiles._mock_correct_file_system(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._getConfig('workitems/correct')
-    work_items = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
+    config = backlog._get_config('workitems/correct')
+    work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deployAzure(args, work_items)
+    backlog._deploy_azure(args, work_items)
     patched_deploy.assert_called_with(args, work_items)
 
 
 def test_build():
     def mock_gather_work_items_return_file_list(*args, **kwargs):
-        return MockedFiles._mockFileList()
+        return MockedFiles._mock_file_list()
 
     def mock_get_config_return_config(*args, **kwargs):
-        return MockedFiles._mockConfig()
+        return MockedFiles._mock_config()
 
     def mock_parse_work_items_return_parsed_file_list(*args, **kwargs):
-        return MockedFiles._mockParsedFileList()
+        return MockedFiles._mock_parsed_file_list()
 
     backlog = helpers.Backlog()
-    backlog._gatherWorkItems = MagicMock(return_value=mock_gather_work_items_return_file_list())
-    backlog._getConfig = MagicMock(return_value=mock_get_config_return_config())
-    backlog._parseWorkItems = MagicMock(return_value=mock_parse_work_items_return_parsed_file_list())
-    backlog._buildWorkItems = MagicMock(return_value=None)
-    backlog._deployGitHub = MagicMock(return_value=None)
-    backlog._deployAzure = MagicMock(return_value=None)
+    backlog._gather_work_items = MagicMock(return_value=mock_gather_work_items_return_file_list())
+    backlog._get_config = MagicMock(return_value=mock_get_config_return_config())
+    backlog._parse_work_items = MagicMock(return_value=mock_parse_work_items_return_parsed_file_list())
+    backlog._build_work_items = MagicMock(return_value=None)
+    backlog._deploy_github = MagicMock(return_value=None)
+    backlog._deploy_azure = MagicMock(return_value=None)
 
     backlog.build(Namespace(backlog='caf', repo='github', validate_only=None))
-    backlog._gatherWorkItems.assert_called_with(StringContains('./workitems/caf'))
-    backlog._getConfig.assert_called_with(StringContains('/workitems/caf'))
-    backlog._parseWorkItems.assert_called_with(mock_gather_work_items_return_file_list())
-    backlog._buildWorkItems.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deployGitHub.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None)
+    backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
+    backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
+    backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
+    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
+    backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None)
 
     backlog.build(Namespace(backlog='caf', repo='azure', org='test', validate_only=None))
-    backlog._gatherWorkItems.assert_called_with(StringContains('./workitems/caf'))
-    backlog._getConfig.assert_called_with(StringContains('/workitems/caf'))
-    backlog._parseWorkItems.assert_called_with(mock_gather_work_items_return_file_list())
-    backlog._buildWorkItems.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deployAzure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None)
+    backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
+    backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
+    backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
+    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
+    backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None)
 
-    backlog._deployGitHub = MagicMock(return_value=None)
+    backlog._deploy_github = MagicMock(return_value=None)
     backlog.build(Namespace(validate_only='./validate/foo'))
-    backlog._gatherWorkItems.assert_called_with('./validate/foo')
-    backlog._getConfig.assert_called_with('./validate/foo')
-    backlog._deployGitHub.assert_not_called()
+    backlog._gather_work_items.assert_called_with('./validate/foo')
+    backlog._get_config.assert_called_with('./validate/foo')
+    backlog._deploy_github.assert_not_called()

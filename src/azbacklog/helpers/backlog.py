@@ -7,9 +7,9 @@ from .. import services
 
 class Backlog():
 
-    def _gatherWorkItems(self, path):
+    def _gather_work_items(self, path):
         fs = FileSystem()
-        files = fs.getFiles(path)
+        files = fs.get_files(path)
 
         return files
 
@@ -27,13 +27,13 @@ class Backlog():
         else:
             raise ValueError(f"configuration file not valid: {valid_config[1]}")
 
-    def _parseWorkItems(self, files):
+    def _parse_work_items(self, files):
         parser = Parser()
         parsed_files = parser.parse_file_hierarchy(files)
 
         return parsed_files
 
-    def _getAndValidateJson(self, path, config):
+    def _get_and_validate_json(self, path, config):
         fs = FileSystem()
         content = fs.read_file(path)
 
@@ -50,101 +50,101 @@ class Backlog():
     def _build_work_items(self, parsed_files, config):
         epics = []
         for epic in parsed_files:
-            built_epic = self._buildEpic(epic, config)
+            built_epic = self._build_epic(epic, config)
             if built_epic is not None:
                 epics.append(built_epic)
 
         return epics
 
-    def _createTag(self, title):
+    def _create_tag(self, title):
         tag = entities.Tag()
         tag.title = title
 
         return tag
 
-    def _buildEpic(self, item, config):
-        json = self._getAndValidateJson(item["epic"], config)
+    def _build_epic(self, item, config):
+        json = self._get_and_validate_json(item["epic"], config)
         if json is not False:
             epic = entities.Epic()
             epic.title = json["title"]
             epic.description = json["description"]
             for tag in json["tags"]:
-                epic.add_tag(self._createTag(tag))
+                epic.add_tag(self._create_tag(tag))
             for role in json["roles"]:
-                epic.add_tag(self._createTag(role))
+                epic.add_tag(self._create_tag(role))
 
             if "features" in item.keys() and len(item["features"]) > 0:
                 for feature in item["features"]:
-                    builtFeature = self._buildFeature(feature, config)
-                    if builtFeature is not None:
-                        epic.add_feature(builtFeature)
+                    built_feature = self._build_feature(feature, config)
+                    if built_feature is not None:
+                        epic.add_feature(built_feature)
 
             return epic
         else:
             return None
 
-    def _buildFeature(self, item, config):
-        json = self._getAndValidateJson(item["feature"], config)
+    def _build_feature(self, item, config):
+        json = self._get_and_validate_json(item["feature"], config)
         if json is not False:
             feature = entities.Feature()
             feature.title = json["title"]
             feature.description = json["description"]
             for tag in json["tags"]:
-                feature.add_tag(self._createTag(tag))
+                feature.add_tag(self._create_tag(tag))
             for role in json["roles"]:
-                feature.add_tag(self._createTag(role))
+                feature.add_tag(self._create_tag(role))
 
             if "stories" in item.keys() and len(item["stories"]) > 0:
                 for story in item["stories"]:
-                    builtStory = self._buildStory(story, config)
-                    if builtStory is not None:
-                        feature.add_userstory(builtStory)
+                    built_story = self._build_story(story, config)
+                    if built_story is not None:
+                        feature.add_userstory(built_story)
 
             return feature
         else:
             return None
 
-    def _buildStory(self, item, config):
-        json = self._getAndValidateJson(item["story"], config)
+    def _build_story(self, item, config):
+        json = self._get_and_validate_json(item["story"], config)
         if json is not False:
             story = entities.UserStory()
             story.title = json["title"]
             story.description = json["description"]
             for tag in json["tags"]:
-                story.add_tag(self._createTag(tag))
+                story.add_tag(self._create_tag(tag))
             for role in json["roles"]:
-                story.add_tag(self._createTag(role))
+                story.add_tag(self._create_tag(role))
 
             if "tasks" in item.keys() and len(item["tasks"]) > 0:
                 for task in item["tasks"]:
-                    builtTask = self._buildTask(task, config)
-                    if builtTask is not None:
-                        story.add_task(builtTask)
+                    built_task = self._build_task(task, config)
+                    if built_task is not None:
+                        story.add_task(built_task)
 
             return story
         else:
             return None
 
-    def _buildTask(self, item, config):
-        json = self._getAndValidateJson(item["task"], config)
+    def _build_task(self, item, config):
+        json = self._get_and_validate_json(item["task"], config)
         if json is not False:
             task = entities.Task()
             task.title = json["title"]
             task.description = json["description"]
             for tag in json["tags"]:
-                task.add_tag(self._createTag(tag))
+                task.add_tag(self._create_tag(tag))
             for role in json["roles"]:
-                task.add_tag(self._createTag(role))
+                task.add_tag(self._create_tag(role))
 
             return task
         else:
             return None
 
-    def _deployGitHub(self, args, workitems):
+    def _deploy_github(self, args, workitems):
         github = services.GitHub(token=args.token)
         github.deploy(args, workitems)
 
-    def _deployAzure(self, args, workitems):
+    def _deploy_azure(self, args, workitems):
         azure = services.AzDevOps(org=args.org, token=args.token)
         azure.deploy(args, workitems)
 
@@ -153,15 +153,15 @@ class Backlog():
             path = args.validate_only
             print(f"Validating metadata ({path})...")
         else:
-            path = FileSystem.findWorkitems() + args.backlog
+            path = FileSystem.find_work_items() + args.backlog
 
-        files = self._gatherWorkItems(path)
-        config = self._getConfig(path)
-        parsedFiles = self._parseWorkItems(files)
-        workItems = self._buildWorkItems(parsedFiles, config)
+        files = self._gather_work_items(path)
+        config = self._get_config(path)
+        parsed_files = self._parse_work_items(files)
+        work_items = self._build_work_items(parsed_files, config)
 
         if args.validate_only is None:
             if args.repo.lower() == 'github':
-                self._deployGitHub(args, workItems)
+                self._deploy_github(args, work_items)
             elif args.repo.lower() == 'azure':
-                self._deployAzure(args, workItems)
+                self._deploy_azure(args, work_items)

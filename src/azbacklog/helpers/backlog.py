@@ -18,7 +18,7 @@ class Backlog():
         content = fs.readFile(path + '/config.json')
 
         parser = Parser()
-        json = parser.json(content)
+        json = parser.parse_json(content)
 
         val = Validation()
         validConfig = val.validateConfig(path, json)
@@ -29,7 +29,7 @@ class Backlog():
 
     def _parseWorkItems(self, files):
         parser = Parser()
-        parsedFiles = parser.fileHierarchy(files)
+        parsedFiles = parser.parse_file_hierarchy(files)
 
         return parsedFiles
 
@@ -38,7 +38,7 @@ class Backlog():
         content = fs.readFile(path)
 
         parser = Parser()
-        json = parser.json(content)
+        json = parser.parse_json(content)
 
         val = Validation()
         validateResult = val.validateMetadata(path, json, config)

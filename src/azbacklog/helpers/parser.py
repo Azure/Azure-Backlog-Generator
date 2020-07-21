@@ -4,17 +4,17 @@ import json
 
 class Parser():
 
-    def links(self, desc) -> str:
+    def parse_links(self, desc) -> str:
         return re.sub(r'([\[]([^\]^\[]*)?[\]])([\(]([^\]^\[]*)?[\)])', r'<a href="\g<4>">\g<2></a>', desc)
 
-    def json(self, content):
+    def parse_json(self, content):
         try:
             data = json.loads(content)
             return data
         except json.JSONDecodeError as exc:
             return (False, exc.args)
 
-    def validString(self, string, allow_empty=False) -> bool:
+    def isvalid_string(self, string, allow_empty=False) -> bool:
         if str is not type(string):
             return False
         elif allow_empty is False:
@@ -22,42 +22,42 @@ class Parser():
         else:
             return True
 
-    def fileHierarchy(self, files) -> list:
-        parsedFiles = []
+    def parse_file_hierarchy(self, files) -> list:
+        parsed_files = []
 
-        epicCnt = -1
+        epic_count = -1
         for file in files:
-            parsedPath = file[file.index('workitems/') + 10:]      # remove '*/workitems/' from path so path is consistent b/t run and test
-            parsedPath = parsedPath.replace('\\', '/')             # remove '\\' in windows paths
-            parsedPath = re.split('/', parsedPath)
+            parsed_path = file[file.index('workitems/') + 10:]       # remove '*/workitems/' from path so path is consistent b/t run and test
+            parsed_path = parsed_path.replace('\\', '/')             # remove '\\' in windows paths
+            parsed_path = re.split('/', parsed_path)
 
-            if (len(parsedPath)) == 3:
-                epicCnt += 1
-                featureCnt = -1
+            if (len(parsed_path)) == 3:
+                epic_count += 1
+                feature_count = -1
 
-                parsedFiles.append({'epic': file})
-            elif (len(parsedPath)) == 4:
-                featureCnt += 1
-                storyCnt = -1
+                parsed_files.append({'epic': file})
+            elif (len(parsed_path)) == 4:
+                feature_count += 1
+                story_count = -1
 
-                if featureCnt == 0:
-                    parsedFiles[epicCnt]["features"] = []
+                if feature_count == 0:
+                    parsed_files[epic_count]["features"] = []
 
-                parsedFiles[epicCnt]["features"].append({'feature': file})
-            elif (len(parsedPath)) == 5:
-                storyCnt += 1
-                taskCnt = -1
+                parsed_files[epic_count]["features"].append({'feature': file})
+            elif (len(parsed_path)) == 5:
+                story_count += 1
+                task_count = -1
 
-                if storyCnt == 0:
-                    parsedFiles[epicCnt]["features"][featureCnt]["stories"] = []
+                if story_count == 0:
+                    parsed_files[epic_count]["features"][feature_count]["stories"] = []
 
-                parsedFiles[epicCnt]["features"][featureCnt]["stories"].append({'story': file})
-            elif (len(parsedPath)) == 6:
-                taskCnt += 1
+                parsed_files[epic_count]["features"][feature_count]["stories"].append({'story': file})
+            elif (len(parsed_path)) == 6:
+                task_count += 1
 
-                if taskCnt == 0:
-                    parsedFiles[epicCnt]["features"][featureCnt]["stories"][storyCnt]["tasks"] = []
+                if task_count == 0:
+                    parsed_files[epic_count]["features"][feature_count]["stories"][story_count]["tasks"] = []
 
-                parsedFiles[epicCnt]["features"][featureCnt]["stories"][storyCnt]["tasks"].append({'task': file})
+                parsed_files[epic_count]["features"][feature_count]["stories"][story_count]["tasks"].append({'task': file})
 
-        return parsedFiles
+        return parsed_files

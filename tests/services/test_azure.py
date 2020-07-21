@@ -225,7 +225,7 @@ def test_create_work_item():
 
 
 def test_deploy(fs):
-    MockedFiles._mockCorrectFileSystem(fs)
+    MockedFiles._mock_correct_file_system(fs)
 
     def mock_return_None(*args, **kwargs):
         return None
@@ -237,8 +237,8 @@ def test_deploy(fs):
     az._create_work_item = MagicMock(return_value=mock_return_None)
 
     backlog = Backlog()
-    config = backlog._getConfig('workitems/correct')
-    work_items = backlog._buildWorkItems(MockedFiles._mockParsedFileList(), config)
+    config = backlog._get_config('workitems/correct')
+    work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = argparse.Namespace()
     args.org = 'foo'

@@ -88,14 +88,14 @@ class AzDevOps():
         return work_client.update_team_settings(patch, team_context)
 
     def _create_tags(self, tags):
-        tagList = []
+        tag_list = []
         if len(tags) == 0:
             return None
 
         for tag in tags:
-            tagList.append(tag.title)
+            tag_list.append(tag.title)
 
-        return "; ".join(tagList)
+        return "; ".join(tag_list)
 
     def _create_work_item(self, project, wit_type, title, description, tags=None, parent=None):
         wit_client = self.clients.get_work_item_tracking_client()
@@ -164,8 +164,8 @@ class AzDevOps():
                 created_feature = self._create_work_item(project.id, 'feature', feature.title, feature.description, tags=self._create_tags(feature.tags), parent=created_epic)
 
                 story_count = 1
-                for story in feature.userStories:
-                    if story_count == len(feature.userStories):
+                for story in feature.userstories:
+                    if story_count == len(feature.userstories):
                         print(feature_string + "└── Creating user story: " + story.title + "...")
                         story_string = feature_string + "    "
                     else:

@@ -33,7 +33,7 @@ class UserStory():
     def tasks(self) -> List[Task]:
         return self._tasks
 
-    def addTask(self, value: Task):
+    def add_task(self, value: Task):
         if not isinstance(value, Task):
             raise TypeError("value must be of type 'Task'")
         self._tasks.append(value)
@@ -42,7 +42,7 @@ class UserStory():
     def tags(self) -> List[Tag]:
         return self._tags
 
-    def addTag(self, value: Tag):
+    def add_tag(self, value: Tag):
         if not isinstance(value, Tag):
             raise TypeError("value must be of type 'Tag'")
         self._tags.append(value)

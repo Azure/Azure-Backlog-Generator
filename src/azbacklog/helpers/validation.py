@@ -3,21 +3,21 @@ from .parser import Parser
 
 class Validation():
 
-    def _validateTitle(self, path, meta) -> []:
+    def _validate_title(self, path, meta) -> []:
         if "title" not in meta:
             return (False, f"'title' property not found in metadata '{path}'")
         if not Parser().isvalid_string(meta["title"]):
             return (False, f"'title' property not formatted correctly in metadata '{path}'")
         return True
 
-    def _validateDescription(self, path, meta) -> []:
+    def _validate_description(self, path, meta) -> []:
         if "description" not in meta:
             return (False, f"'description' property not found in metadata '{path}'")
         if not Parser().isvalid_string(meta["description"], True):
             return (False, f"'description' property not formatted correctly in metadata '{path}'")
         return True
 
-    def _validateTags(self, path, meta, config) -> []:
+    def _validate_tags(self, path, meta, config) -> []:
         if "tags" not in meta:
             return (False, f"'tags' property not found in metadata '{path}'")
 
@@ -30,7 +30,7 @@ class Validation():
 
         return True
 
-    def _validateRoles(self, path, meta, config) -> []:
+    def _validate_roles(self, path, meta, config) -> []:
         if "roles" not in meta:
             return (False, f"'roles' property not found in metadata '{path}'")
 
@@ -43,30 +43,30 @@ class Validation():
 
         return True
 
-    def validateMetadata(self, path, json, config) -> []:
+    def validate_metadata(self, path, json, config) -> []:
         if json is None:
             return (False, f"metadata in '{path}' is empty")
 
-        validTitle = self._validateTitle(path, json)
-        if (validTitle is not True):
-            return validTitle
+        valid_title = self._validate_title(path, json)
+        if (valid_title is not True):
+            return valid_title
 
-        validDesc = self._validateDescription(path, json)
-        if (validDesc is not True):
-            return validDesc
+        valid_desc = self._validate_description(path, json)
+        if (valid_desc is not True):
+            return valid_desc
 
-        validTags = self._validateTags(path, json, config)
-        if (validTags is not True):
-            return validTags
+        valid_tags = self._validate_tags(path, json, config)
+        if (valid_tags is not True):
+            return valid_tags
 
-        validRoles = self._validateRoles(path, json, config)
-        if (validRoles is not True):
-            return validRoles
+        valid_roles = self._validate_roles(path, json, config)
+        if (valid_roles is not True):
+            return valid_roles
 
         return True
 
-    def validateConfig(self, path, json) -> []:
-        allowedConfig = [
+    def validate_config(self, path, json) -> []:
+        allowed_config = [
             "tags",
             "roles"
         ]
@@ -75,10 +75,10 @@ class Validation():
             return (False, f"configuration in '{path}' is empty")
 
         for key in json.keys():
-            if key not in allowedConfig:
+            if key not in allowed_config:
                 return (False, f"value '{key}' not allowed in configuration '{path}'")
 
-        for key in allowedConfig:
+        for key in allowed_config:
             if key not in json.keys():
                 return (False, f"expected value '{key}' not found in configuration '{path}'")
 

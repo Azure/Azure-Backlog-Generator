@@ -21,17 +21,17 @@ class Backlog():
         json = parser.parse_json(content)
 
         val = Validation()
-        validConfig = val.validateConfig(path, json)
-        if validConfig is True:
+        valid_config = val.validate_config(path, json)
+        if valid_config is True:
             return json
         else:
-            raise ValueError(f"configuration file not valid: {validConfig[1]}")
+            raise ValueError(f"configuration file not valid: {valid_config[1]}")
 
     def _parseWorkItems(self, files):
         parser = Parser()
-        parsedFiles = parser.parse_file_hierarchy(files)
+        parsed_files = parser.parse_file_hierarchy(files)
 
-        return parsedFiles
+        return parsed_files
 
     def _getAndValidateJson(self, path, config):
         fs = FileSystem()
@@ -41,18 +41,18 @@ class Backlog():
         json = parser.parse_json(content)
 
         val = Validation()
-        validateResult = val.validateMetadata(path, json, config)
-        if validateResult is True:
+        validation_result = val.validate_metadata(path, json, config)
+        if validation_result is True:
             return json
         else:
-            raise ValueError(f"metadata not valid: {validateResult[1]}")
+            raise ValueError(f"metadata not valid: {validation_result[1]}")
 
-    def _build_work_items(self, parsedFiles, config):
+    def _build_work_items(self, parsed_files, config):
         epics = []
-        for epic in parsedFiles:
-            builtEpic = self._buildEpic(epic, config)
-            if builtEpic is not None:
-                epics.append(builtEpic)
+        for epic in parsed_files:
+            built_epic = self._buildEpic(epic, config)
+            if built_epic is not None:
+                epics.append(built_epic)
 
         return epics
 

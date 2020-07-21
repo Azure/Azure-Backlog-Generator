@@ -237,7 +237,7 @@ def test_deploy(fs):
     az._create_work_item = MagicMock(return_value=mock_return_None)
 
     backlog = Backlog()
-    config = backlog._get_config('workitems/correct')
+    config = backlog._get_config('workitems/correct', 'azure')
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = argparse.Namespace()

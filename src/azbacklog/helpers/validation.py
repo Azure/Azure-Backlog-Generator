@@ -65,14 +65,19 @@ class Validation():
 
         return True
 
-    def validate_config(self, path, json) -> []:
-        allowed_config = [
+    def validate_config(self, path, json, repo_type=None) -> []:
+        config_options = [
             "description",
             "tags",
             "roles",
-            "tagcolors"
+            "#tagcolors"
         ]
 
+        allowed_config = list(map(lambda x: x[1:] if x[0] == '#' else x, config_options))
+        required_config = list(filter(lambda x: x[0] != '#', config_options))
+
+        print(allowed_config)
+        print(required_config)
         if json is None:
             return (False, f"configuration in '{path}' is empty")
 
@@ -80,11 +85,15 @@ class Validation():
             if key not in allowed_config:
                 return (False, f"value '{key}' not allowed in configuration '{path}'")
 
-        for key in allowed_config:
+        for key in required_config:
             if key not in json.keys():
                 return (False, f"expected value '{key}' not found in configuration '{path}'")
 
-        if len(json["tagcolors"]) != len(json["tags"]) + len(json["roles"]):
-            return (False, "length of 'tagcolors' should equal the combined number of tags and roles")
+        if repo_type == 'github' or repo_type == 'validate':
+            if 'tagcolors' not in json.keys():
+                return (False, f"GitHub requires value 'tagcolors' in configuration '{path}'")
+
+            if len(json["tagcolors"]) != len(json["tags"]) + len(json["roles"]):
+                return (False, "length of 'tagcolors' should equal the combined number of tags and roles")
 
         return True

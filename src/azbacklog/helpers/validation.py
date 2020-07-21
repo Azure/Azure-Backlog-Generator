@@ -69,7 +69,8 @@ class Validation():
         allowed_config = [
             "description",
             "tags",
-            "roles"
+            "roles",
+            "tagcolors"
         ]
 
         if json is None:
@@ -82,5 +83,8 @@ class Validation():
         for key in allowed_config:
             if key not in json.keys():
                 return (False, f"expected value '{key}' not found in configuration '{path}'")
+
+        if len(json["tagcolors"]) != len(json["tags"]) + len(json["roles"]):
+            return (False, "length of 'tagcolors' should equal the combined number of tags and roles")
 
         return True

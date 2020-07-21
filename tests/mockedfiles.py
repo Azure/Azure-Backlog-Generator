@@ -12,6 +12,13 @@ class MockedFiles():
                                     "roles": [ \
                                         "Infra", \
                                         "AppDev" \
+                                    ], \
+                                    "tagcolors": [ \
+                                        "d73a4a", \
+                                        "0075ca", \
+                                        "cfd3d7", \
+                                        "a2eeef", \
+                                        "7057ff" \
                                     ] \
                                 }')
         fs.create_file('./workitems/correct/01_epic/metadata.json',
@@ -206,6 +213,13 @@ class MockedFiles():
             "roles": [
                 "Infra",
                 "AppDev"
+            ],
+            "tagcolors": [
+                "d73a4a",
+                "0075ca",
+                "cfd3d7",
+                "a2eeef",
+                "7057ff"
             ]
         }
 

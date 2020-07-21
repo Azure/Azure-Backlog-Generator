@@ -15,7 +15,7 @@ class Backlog():
 
     def _get_config(self, path):
         fs = FileSystem()
-        content = fs.readFile(path + '/config.json')
+        content = fs.read_file(path + '/config.json')
 
         parser = Parser()
         json = parser.parse_json(content)
@@ -35,7 +35,7 @@ class Backlog():
 
     def _getAndValidateJson(self, path, config):
         fs = FileSystem()
-        content = fs.readFile(path)
+        content = fs.read_file(path)
 
         parser = Parser()
         json = parser.parse_json(content)

@@ -3,32 +3,32 @@ import sys
 
 
 class FileSystem():
-    parentPath = True
+    parent_path = True
 
     @staticmethod
-    def findWorkitems():
-        developedPath = './workitems/'
-        installedPath = os.path.join(sys.prefix, 'workitems/')
-        if os.path.exists(developedPath):
-            return developedPath
-        elif os.path.exists(installedPath):
-            return installedPath
+    def find_work_items():
+        developed_path = './workitems/'
+        installed_path = os.path.join(sys.prefix, 'workitems/')
+        if os.path.exists(developed_path):
+            return developed_path
+        elif os.path.exists(installed_path):
+            return installed_path
         else:
             raise FileNotFoundError("'workitems' folder not found")
 
-    def getFiles(self, path):
+    def get_files(self, path):
         files = []
         (root, dirNames, fileNames) = next(os.walk(path))
 
         if (
-                self.parentPath is True and
+                self.parent_path is True and
                 (
                     (len(fileNames) == 1 and fileNames[0].lower() != 'config.json') or
                     len(fileNames) > 1
                 )
         ):
             raise FileExistsError("parent path should not contain any files")
-        elif self.parentPath is False and 'metadata.json' not in fileNames:
+        elif self.parent_path is False and 'metadata.json' not in fileNames:
             raise FileNotFoundError(f"'metadata.json' does not exist in path '{path}'")
 
         fileNames.sort()
@@ -36,15 +36,15 @@ class FileSystem():
             if fileName == 'metadata.json':
                 files.append(os.path.join(path, fileName))
 
-        self.parentPath = False
+        self.parent_path = False
 
         dirNames.sort()
         for dirName in dirNames:
-            files.extend(self.getFiles(os.path.join(root, dirName)))
+            files.extend(self.get_files(os.path.join(root, dirName)))
 
         return files
 
-    def readFile(self, path):
+    def read_file(self, path):
         content = None
         try:
             with open(path, 'r') as reader:

@@ -92,5 +92,5 @@ def test_validate_config():
     v = helpers.Validation()
     assert v.validate_config('./somepath/config.json', None) == (False, "configuration in './somepath/config.json' is empty")
     assert v.validate_config('./somepath/config.json', {'foo': 'bar'}) == (False, "value 'foo' not allowed in configuration './somepath/config.json'")
-    assert v.validate_config('./somepath/config.json', {'roles': ['AppDev']}) == (False, "expected value 'tags' not found in configuration './somepath/config.json'")
-    assert v.validate_config('./somepath/config.json', {'tags': ['0f_Folder'], 'roles': ['AppDev']}) is True
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'roles': ['AppDev']}) == (False, "expected value 'tags' not found in configuration './somepath/config.json'")
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev']}) is True

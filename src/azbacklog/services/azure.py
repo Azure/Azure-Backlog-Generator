@@ -46,11 +46,11 @@ class AzDevOps():
             else:
                 time.sleep(3)
 
-    def _create_project(self, name):
+    def _create_project(self, name, desc):
         core_client = self.clients.get_core_client()
         capabilities = {'versioncontrol': {'sourceControlType': 'Git'},
                         'processTemplate': {'templateTypeId': 'adcc42ab-9882-485e-a3ed-7678f01f66bc'}}
-        project = TeamProject(name=name, description=None, visibility='private', capabilities=capabilities)
+        project = TeamProject(name=name, description=desc, visibility='private', capabilities=capabilities)
         ops_ref = core_client.queue_create_project(project)
         ops_result = self._check_status(ops_ref.id)
 
@@ -135,13 +135,13 @@ class AzDevOps():
 
         return wit_client.create_work_item(patch, project, wit_type)
 
-    def deploy(self, config, work_items):
-        print("┌── Creating project (" + config.org + "/" + config.project + ")...")
-        self._create_project(config.project)
-        project = self._get_project(config.project)
+    def deploy(self, args, work_items, config):
+        print("┌── Creating project (" + args.org + "/" + args.project + ")...")
+        self._create_project(args.project, config["description"])
+        project = self._get_project(args.project)
 
         print("├── Enabling epics visibility in backlog...")
-        self._enable_epics(project, config.project)
+        self._enable_epics(project, args.project)
 
         epic_count = 1
         for epic in work_items:

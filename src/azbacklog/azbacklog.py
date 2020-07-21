@@ -21,24 +21,27 @@ def main():
     parser.set_defaults(func=run)
     args = parser.parse_args()
 
+    ask_org = False
     if args.validate_only is None:
         if args.token is None:
             args.token = input('Enter access token: ')
             TokenAction.validate(parser, args.token, args)
 
         if args.repo is None:
+            ask_org = True
             args.repo = input('Enter repository type [azure, github]: ')
             RepoAction.validate(parser, args.repo, args)
 
         if args.project is None:
+            ask_org = True
             args.project = input('Enter project name: ')
             ProjectAction.validate(parser, args.project, args)
 
-        if args.org is None:
-            args.org = input('Enter organization name: ')
+        if args.org is None and (ask_org is True or args.repo == 'azure'):
+            args.org = input('Enter organization name (required if repository type is \'azure\'): ')
             OrgAction.validate(parser, args.org, args)
 
-        if args.org.strip() == '':
+        if args.org is not None and args.org.strip() == '':
             args.org = None
 
         if args.backlog is None:

@@ -10,7 +10,7 @@ def test_get_files_correct_file_system(fs):
 
     f = helpers.FileSystem()
     files = f.get_files('./workitems/correct')
-    assert len(files) == 20
+    assert len(files) == 23
 
 
 def test_get_files_parent_path_has_file_file_system(fs):

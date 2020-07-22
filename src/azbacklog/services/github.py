@@ -1,4 +1,6 @@
-from github import Github
+import time
+from github import Github, UnknownObjectException
+from .. import helpers
 
 
 class GitHub():
@@ -83,13 +85,36 @@ class GitHub():
 
         return desc
 
-    def deploy(self, args, workitems, config):
+    def _initialize_repo(self, repo, path, attachments):
+        readme_path = list(filter(lambda x: x.lower() == (path + '/README.md').lower(), attachments))
+
+        if len(readme_path) == 1:
+            i = 1
+            while i <= 10:
+                try:
+                    sha = repo.get_readme().sha
+
+                    fs = helpers.FileSystem()
+                    content = fs.read_file(readme_path[0])
+
+                    return repo.update_file('README.md', 'Initial commit', content, sha)
+
+                except UnknownObjectException:
+                    time.sleep(3)
+                    i += 1
+
+        return None
+
+    def deploy(self, args, workitems, config, attachments):
         if args.org is not None:
             print("┌── Creating repo (" + args.org + "/" + args.project + ")...")
             repo = self._create_org_repo(args.org, args.project, config["description"])
         else:
             print("┌── Creating repo (" + args.repo + "/" + args.project + ")...")
             repo = self._create_user_repo(args.project, config["description"])
+
+        print("├── Initializing repo...")
+        self._initialize_repo(repo, config["_repository_path"], attachments)
 
         print("├── Deleting default labels...")
         self._delete_labels(repo)

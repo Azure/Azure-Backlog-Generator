@@ -57,6 +57,20 @@ def test_get_config(monkeypatch, fs):
     assert "configuration file not valid: there's an error" in str(exc.value)
 
 
+def test_filter_attachments(fs):
+    backlog = helpers.Backlog()
+    result = backlog._filter_attachments(MockedFiles._mock_file_list())
+
+    assert len(result) == 3
+
+
+def test_filter_work_items(fs):
+    backlog = helpers.Backlog()
+    result = backlog._filter_work_items(MockedFiles._mock_file_list())
+
+    assert len(result) == 20
+
+
 def test_parse_work_items(monkeypatch):
     def mock_parse_work_items_returns_file_list(*args, **kwargs):
         return MockedFiles._mock_parsed_file_list()
@@ -348,8 +362,8 @@ def test_deploy_github(patched_github, patched_deploy, fs):
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deploy_github(args, work_items, config)
-    patched_deploy.assert_called_with(args, work_items, config)
+    backlog._deploy_github(args, work_items, config, [])
+    patched_deploy.assert_called_with(args, work_items, config, [])
 
 
 @patch('azbacklog.services.azure.AzDevOps.deploy')
@@ -366,13 +380,13 @@ def test_deploy_azure(patched_deploy, fs, monkeypatch):
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
 
-    backlog._deploy_azure(args, work_items, config)
-    patched_deploy.assert_called_with(args, work_items, config)
+    backlog._deploy_azure(args, work_items, config, [])
+    patched_deploy.assert_called_with(args, work_items, config, [])
 
 
 def test_build():
     def mock_gather_work_items_return_file_list(*args, **kwargs):
-        return MockedFiles._mock_file_list()
+        return list(filter(lambda x: x.endswith('metadata.json'), MockedFiles._mock_file_list()))
 
     def mock_get_config_return_config(*args, **kwargs):
         return MockedFiles._mock_config()
@@ -392,15 +406,19 @@ def test_build():
     backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
     backlog._get_config.assert_called_with('./workitems/caf', 'github')
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
-    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None, mock_get_config_return_config())
+    config = mock_get_config_return_config()
+    config["_repository_path"] = './workitems/caf'
+    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), config)
+    backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None, config, [])
 
     backlog.build(Namespace(backlog='caf', repo='azure', org='test', validate_only=None))
     backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
     backlog._get_config.assert_called_with('./workitems/caf', 'azure')
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
-    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
-    backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None, mock_get_config_return_config())
+    config = mock_get_config_return_config()
+    config["_repository_path"] = './workitems/caf'
+    backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), config)
+    backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None, config, [])
 
     backlog._deploy_github = MagicMock(return_value=None)
     backlog.build(Namespace(validate_only='./validate/foo'))

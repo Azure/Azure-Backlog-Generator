@@ -29,6 +29,7 @@ def test_isvalid_string():
 
 def test_parse_file_hierarchy():
     p = helpers.Parser()
-    parsed_files = p.parse_file_hierarchy(MockedFiles._mock_file_list())
+    metadatas = list(filter(lambda x: x.endswith('metadata.json'), MockedFiles._mock_file_list()))
+    parsed_files = p.parse_file_hierarchy(metadatas)
 
     assert parsed_files == MockedFiles._mock_parsed_file_list()

@@ -1,14 +1,18 @@
 from azure.devops.connection import Connection
 from azure.devops.v5_1.core import TeamProject
+from azure.devops.v5_1.git import GitPush, GitRefUpdate, GitCommit
 from msrest.authentication import BasicAuthentication
+from msrest.universal_http import ClientRequest
 from types import SimpleNamespace
 import time
+from .. import helpers
 
 
 class AzDevOps():
 
     def __init__(self, org=None, token=None):
-        self.clients = self._auth(org, token)
+        self.connection = self._auth(org, token)
+        self.clients = self.connection.clients
 
     def _auth(self, org, token):
         if org is None or token is None:
@@ -17,7 +21,7 @@ class AzDevOps():
         credentials = BasicAuthentication('', token)
         connection = Connection(base_url=f'https://dev.azure.com/{org}', creds=credentials)
 
-        return connection.clients
+        return connection
 
     def _get_project(self, name):
         core_client = self.clients.get_core_client()
@@ -135,10 +139,47 @@ class AzDevOps():
 
         return wit_client.create_work_item(patch, project, wit_type)
 
-    def deploy(self, args, work_items, config):
+    def _initialize_repo(self, org, project, path, attachments):
+        readme_path = list(filter(lambda x: x.lower() == (path + '/README.md').lower(), attachments))
+
+        if len(readme_path) == 1:
+            fs = helpers.FileSystem()
+            content = fs.read_file(readme_path[0])
+
+            git_client = self.clients.get_git_client()
+
+            repo = git_client.get_repositories(project.id)[0]
+            ref_update = GitRefUpdate(name="refs/heads/master", old_object_id="0000000000000000000000000000000000000000", repository_id=repo.id)
+            changes = [
+                {
+                    "changeType": "add",
+                    "item": {
+                        "path": "/README.md"
+                    },
+                    "newContent": {
+                        "content": content,
+                        "contentType": "rawtext"
+                    }
+                }
+            ]
+            commit = GitCommit(comment="Initial commit.", changes=changes)
+            push = GitPush(commits=[commit], ref_updates=[ref_update], repository=repo)
+            git_client.create_push(push, repo.id)
+
+            headers = {"content-type": "application/json; charset=utf-8'"}
+            client_request = ClientRequest("PATCH", f'https://dev.azure.com/{org}/_apis/Settings/project/{project.id}/Entries/host?api-version=5.1-preview.1')
+            payload = {"VersionControl/ProjectOverview/DefaultRepository": repo.id}
+            response = self.connection._client.send(request=client_request, headers=headers, content=payload)
+
+            return response
+
+    def deploy(self, args, work_items, config, attachments):
         print("┌── Creating project (" + args.org + "/" + args.project + ")...")
         self._create_project(args.project, config["description"])
         project = self._get_project(args.project)
+
+        print("├── Initializing repo...")
+        self._initialize_repo(args.org, project, config["_repository_path"], attachments)
 
         print("├── Enabling epics visibility in backlog...")
         self._enable_epics(project, args.project)

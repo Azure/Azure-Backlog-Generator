@@ -5,6 +5,8 @@ from types import SimpleNamespace
 from mock import Mock, MagicMock, patch
 from azure.devops.connection import Connection
 from azure.devops.released.client_factory import ClientFactory
+from azure.devops.v5_1.git import GitClient
+from msrest.service_client import ServiceClient
 from msrest.authentication import BasicAuthentication
 import azbacklog.services as services
 from azbacklog.services import AzDevOps
@@ -50,11 +52,21 @@ def mock_auth(*args, **kwargs):
         mock.create_work_item.return_value = None
         return mock
 
-    mock = MagicMock(spec=ClientFactory)
-    mock.get_core_client.return_value = mock_get_core_client()
-    mock.get_operations_client.return_value = mock_get_operations_client()
-    mock.get_work_client.return_value = mock_get_work_client()
-    mock.get_work_item_tracking_client = mock_get_work_item_tracking_client()
+    def mock_get_git_client(*args, **kwargs):
+        mock = MagicMock()
+        mock.get_repositories = Mock(spec=GitClient)
+        mock.get_repositories.create_push = MagicMock(return_value=None)
+        return mock
+
+    mock = MagicMock(spec=Connection)
+    mock.clients = MagicMock(spec=ClientFactory)
+    mock.clients.get_core_client.return_value = mock_get_core_client()
+    mock.clients.get_operations_client.return_value = mock_get_operations_client()
+    mock.clients.get_work_client.return_value = mock_get_work_client()
+    mock.clients.get_work_item_tracking_client = mock_get_work_item_tracking_client()
+    mock.clients.get_git_client = mock_get_git_client()
+    mock._client = MagicMock(spec=ServiceClient)
+    mock._client.send = MagicMock(return_value=None)
     return mock
 
 
@@ -224,6 +236,20 @@ def test_create_work_item():
     assert az.clients.get_work_item_tracking_client.return_value.create_work_item.called_with(parent_patch, project, 'test')
 
 
+def test_initialize_repo(fs):
+    az = AzDevOps(org='foo', token='bar')
+    project = SimpleNamespace(id=1)
+
+    path = './workitems/correct'
+
+    MockedFiles._mock_correct_file_system(fs)
+    attachments = MockedFiles._mock_file_list()
+
+    az._initialize_repo('foo', project, path, attachments)
+    assert az.clients.get_git_client.return_value.create_push.called
+    assert az.connection._client.send.called
+
+
 def test_deploy(fs):
     MockedFiles._mock_correct_file_system(fs)
 
@@ -238,6 +264,7 @@ def test_deploy(fs):
 
     backlog = Backlog()
     config = backlog._get_config('workitems/correct', 'azure')
+    config["_repository_path"] = './workitems/correct'
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = argparse.Namespace()
@@ -246,7 +273,7 @@ def test_deploy(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    az.deploy(args, work_items, config)
+    az.deploy(args, work_items, config, [])
 
     az._create_project.assert_called_with('testProject', 'Sample description')
     az._enable_epics.assert_called()

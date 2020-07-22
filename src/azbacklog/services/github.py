@@ -128,7 +128,7 @@ class GitHub():
                         print(folder_string + "│   └── Creating issue: " + story.title + "...")
                     else:
                         print(folder_string + "│   ├── Creating issue: " + story.title + "...")
-                    
+
                     issue = self._create_issue(repo, milestone, story.title, self._build_description(story.description, story.tasks), list(map(lambda t: t.title, story.tags)))
                     issues.append(issue)
 

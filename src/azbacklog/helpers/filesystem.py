@@ -4,6 +4,10 @@ import sys
 
 class FileSystem():
     parent_path = True
+    allowed_parent_files = [
+       'config.json', 
+       'readme.md' 
+    ]
 
     @staticmethod
     def find_work_items():
@@ -22,14 +26,14 @@ class FileSystem():
 
         if self.parent_path is True:
             for fileName in fileNames:
-                if fileName.lower() not in ['config.json', 'readme.md']:
+                if fileName.lower() not in self.allowed_parent_files:
                     raise FileExistsError("parent path should not contain any files")
         elif self.parent_path is False and 'metadata.json' not in fileNames:
             raise FileNotFoundError(f"'metadata.json' does not exist in path '{path}'")
 
         fileNames.sort()
         for fileName in fileNames:
-            if fileName == 'metadata.json':
+            if fileName.lower() in self.allowed_parent_files:
                 files.append(os.path.join(path, fileName))
 
         self.parent_path = False

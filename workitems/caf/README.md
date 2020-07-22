@@ -1,0 +1,4 @@
+# Cloud Adoption Framework (CAF)
+The [Microsoft Cloud Adoption Framework for Azure](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/) is the One Microsoft approach to cloud adoption in Azure, consolidating and shaping proven practices from Microsoft employees, partners, and customers.
+
+Proper implementation of CAF, in order to establish a foundational landing zone, requires solid architecture and migration experience along with rigorous amounts of effort by Microsoft and the customer. Migration of on-premises workloads to the cloud is no small feat and includes many steps. Therefore, in order to assist cloud architects with migrating customers, those necessary steps have been compiled into a list of backlog items. This backlog will enable the cloud architect to manage an adoption and migration path in alignment to CAF to "land" the customer workloads in Azure.

@@ -20,14 +20,10 @@ class FileSystem():
         files = []
         (root, dirNames, fileNames) = next(os.walk(path))
 
-        if (
-                self.parent_path is True and
-                (
-                    (len(fileNames) == 1 and fileNames[0].lower() != 'config.json') or
-                    len(fileNames) > 1
-                )
-        ):
-            raise FileExistsError("parent path should not contain any files")
+        if self.parent_path is True:
+            for fileName in fileNames:
+                if fileName.lower() not in ['config.json', 'readme.md']:
+                    raise FileExistsError("parent path should not contain any files")
         elif self.parent_path is False and 'metadata.json' not in fileNames:
             raise FileNotFoundError(f"'metadata.json' does not exist in path '{path}'")
 

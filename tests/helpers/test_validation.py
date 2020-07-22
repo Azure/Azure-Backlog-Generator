@@ -93,4 +93,8 @@ def test_validate_config():
     assert v.validate_config('./somepath/config.json', None) == (False, "configuration in './somepath/config.json' is empty")
     assert v.validate_config('./somepath/config.json', {'foo': 'bar'}) == (False, "value 'foo' not allowed in configuration './somepath/config.json'")
     assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'roles': ['AppDev']}) == (False, "expected value 'tags' not found in configuration './somepath/config.json'")
-    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev']}) is True
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev']}, 'github') == (False, "GitHub requires value 'tagcolors' in configuration './somepath/config.json'")
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev'], 'tagcolors': ["d73a4a", "0075ca", "cfd3d7"]}, 'validate') == (False, "length of 'tagcolors' should equal the combined number of tags and roles")
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev'], 'tagcolors': ["d73a4a", "0075ca", "cfd3d7"]}) is True      # will pass even though 'tagcolors' is different length since repo_type has not been set to 'github' or 'validate'
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev']}) is True                                                   # will pass since 'tagcolors' is optional when repo_type has not been set to 'github' or 'validate'
+    assert v.validate_config('./somepath/config.json', {'description': 'Sample description', 'tags': ['0f_Folder'], 'roles': ['AppDev'], 'tagcolors': ["d73a4a", "0075ca"]}) is True

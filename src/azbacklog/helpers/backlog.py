@@ -13,7 +13,7 @@ class Backlog():
 
         return files
 
-    def _get_config(self, path):
+    def _get_config(self, path, repo_type):
         fs = FileSystem()
         content = fs.read_file(path + '/config.json')
 
@@ -21,7 +21,7 @@ class Backlog():
         json = parser.parse_json(content)
 
         val = Validation()
-        valid_config = val.validate_config(path, json)
+        valid_config = val.validate_config(path, json, repo_type)
         if valid_config is True:
             return json
         else:
@@ -62,16 +62,17 @@ class Backlog():
 
         return tag
 
+    def _combine_tags(self, json):
+        return list(set().union(json["tags"], json["roles"]))
+
     def _build_epic(self, item, config):
         json = self._get_and_validate_json(item["epic"], config)
         if json is not False:
             epic = entities.Epic()
             epic.title = json["title"]
             epic.description = json["description"]
-            for tag in json["tags"]:
+            for tag in self._combine_tags(json):
                 epic.add_tag(self._create_tag(tag))
-            for role in json["roles"]:
-                epic.add_tag(self._create_tag(role))
 
             if "features" in item.keys() and len(item["features"]) > 0:
                 for feature in item["features"]:
@@ -89,10 +90,8 @@ class Backlog():
             feature = entities.Feature()
             feature.title = json["title"]
             feature.description = json["description"]
-            for tag in json["tags"]:
+            for tag in self._combine_tags(json):
                 feature.add_tag(self._create_tag(tag))
-            for role in json["roles"]:
-                feature.add_tag(self._create_tag(role))
 
             if "stories" in item.keys() and len(item["stories"]) > 0:
                 for story in item["stories"]:
@@ -110,10 +109,8 @@ class Backlog():
             story = entities.UserStory()
             story.title = json["title"]
             story.description = json["description"]
-            for tag in json["tags"]:
+            for tag in self._combine_tags(json):
                 story.add_tag(self._create_tag(tag))
-            for role in json["roles"]:
-                story.add_tag(self._create_tag(role))
 
             if "tasks" in item.keys() and len(item["tasks"]) > 0:
                 for task in item["tasks"]:
@@ -131,10 +128,8 @@ class Backlog():
             task = entities.Task()
             task.title = json["title"]
             task.description = json["description"]
-            for tag in json["tags"]:
+            for tag in self._combine_tags(json):
                 task.add_tag(self._create_tag(tag))
-            for role in json["roles"]:
-                task.add_tag(self._create_tag(role))
 
             return task
         else:
@@ -151,17 +146,19 @@ class Backlog():
     def build(self, args):
         if args.validate_only is not None:
             path = args.validate_only
+            repo_type = 'validate'
             print(f"Validating metadata ({path})...")
         else:
             path = FileSystem.find_work_items() + args.backlog
+            repo_type = args.repo.lower()
 
         files = self._gather_work_items(path)
-        config = self._get_config(path)
+        config = self._get_config(path, repo_type)
         parsed_files = self._parse_work_items(files)
         work_items = self._build_work_items(parsed_files, config)
 
         if args.validate_only is None:
-            if args.repo.lower() == 'github':
+            if repo_type == 'github':
                 self._deploy_github(args, work_items, config)
-            elif args.repo.lower() == 'azure':
+            elif repo_type == 'azure':
                 self._deploy_azure(args, work_items, config)

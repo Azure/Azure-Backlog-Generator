@@ -49,11 +49,11 @@ def test_get_config(monkeypatch, fs):
     backlog = helpers.Backlog()
 
     monkeypatch.setattr(helpers.Validation, "validate_config", mock_validation_validate_config_returns_True)
-    assert backlog._get_config('.') == mock_parser_json_returns_json()
+    assert backlog._get_config('.', 'validate') == mock_parser_json_returns_json()
 
     monkeypatch.setattr(helpers.Validation, "validate_config", mock_validation_validate_config_raises_error)
     with pytest.raises(ValueError) as exc:
-        backlog._get_config('.')
+        backlog._get_config('.', 'validate')
     assert "configuration file not valid: there's an error" in str(exc.value)
 
 
@@ -129,6 +129,13 @@ def test_create_tag(fs):
 
     assert isinstance(tag, entities.Tag) is True
     assert tag.title == "foo bar"
+
+
+def test_combine_tags():
+    backlog = helpers.Backlog()
+    tags = backlog._combine_tags({'tags': ['Foo1', 'Foo2', 'Foo3', 'Foo6'], 'roles': ['Foo1', 'Foo2', 'Foo4', 'Foo5']})
+
+    assert sorted(tags) == ['Foo1', 'Foo2', 'Foo3', 'Foo4', 'Foo5', 'Foo6']
 
 
 def test_build_epic(fs):
@@ -336,7 +343,7 @@ def test_deploy_github(patched_github, patched_deploy, fs):
     MockedFiles._mock_correct_file_system(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._get_config('workitems/correct')
+    config = backlog._get_config('workitems/correct', 'github')
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
@@ -354,7 +361,7 @@ def test_deploy_azure(patched_deploy, fs, monkeypatch):
     MockedFiles._mock_correct_file_system(fs)
 
     backlog = helpers.Backlog()
-    config = backlog._get_config('workitems/correct')
+    config = backlog._get_config('workitems/correct', 'azure')
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = Namespace(org='testOrg', repo=None, project='testProject', backlog='correct', token='testToken')
@@ -383,14 +390,14 @@ def test_build():
 
     backlog.build(Namespace(backlog='caf', repo='github', validate_only=None))
     backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
-    backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
+    backlog._get_config.assert_called_with('./workitems/caf', 'github')
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
     backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
     backlog._deploy_github.assert_called_with(Namespace(backlog='caf', repo='github', validate_only=None), None, mock_get_config_return_config())
 
     backlog.build(Namespace(backlog='caf', repo='azure', org='test', validate_only=None))
     backlog._gather_work_items.assert_called_with(StringContains('./workitems/caf'))
-    backlog._get_config.assert_called_with(StringContains('/workitems/caf'))
+    backlog._get_config.assert_called_with('./workitems/caf', 'azure')
     backlog._parse_work_items.assert_called_with(mock_gather_work_items_return_file_list())
     backlog._build_work_items.assert_called_with(mock_parse_work_items_return_parsed_file_list(), mock_get_config_return_config())
     backlog._deploy_azure.assert_called_with(Namespace(backlog='caf', repo='azure', org='test', validate_only=None), None, mock_get_config_return_config())
@@ -398,5 +405,5 @@ def test_build():
     backlog._deploy_github = MagicMock(return_value=None)
     backlog.build(Namespace(validate_only='./validate/foo'))
     backlog._gather_work_items.assert_called_with('./validate/foo')
-    backlog._get_config.assert_called_with('./validate/foo')
+    backlog._get_config.assert_called_with('./validate/foo', 'validate')
     backlog._deploy_github.assert_not_called()

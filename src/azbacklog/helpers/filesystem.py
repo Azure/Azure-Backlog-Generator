@@ -5,8 +5,8 @@ import sys
 class FileSystem():
     parent_path = True
     allowed_parent_files = [
-       'config.json', 
-       'readme.md' 
+        'config.json',
+        'readme.md'
     ]
 
     @staticmethod

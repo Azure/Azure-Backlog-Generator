@@ -229,13 +229,12 @@ def test_build_description():
 
 def test_build_initialize_repo(fs, mock_Github):
     MockedFiles._mock_correct_file_system(fs)
-    
+
     gh = GitHub(token='foo')
     gh.github = mock_Github
     repo = gh._get_user().create_repo()
 
     gh._initialize_repo(repo, './workitems/correct', ['./workitems/correct/README.md', './workitems/correct/feature_01/attachment.doc'])
-
 
 
 def test_deploy_with_org(fs):

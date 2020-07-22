@@ -2,6 +2,7 @@ import time
 from github import Github, UnknownObjectException
 from .. import helpers
 
+
 class GitHub():
 
     def __init__(self, username=None, password=None, hostname=None, token=None):
@@ -90,16 +91,15 @@ class GitHub():
         if len(readme_path) == 1:
             i = 1
             while i <= 10:
-                try: 
-                    readme = repo.get_readme()
+                try:
                     sha = repo.get_readme().sha
 
                     fs = helpers.FileSystem()
                     content = fs.read_file(readme_path[0])
-                    
+
                     return repo.update_file('README.md', 'Initial commit', content, sha)
 
-                except UnknownObjectException as exc:
+                except UnknownObjectException:
                     time.sleep(3)
                     i += 1
 

@@ -21,7 +21,7 @@ class MockedFiles():
                                         "7057ff" \
                                     ] \
                                 }')
-        fs.create_file('./workitems/correct/README.md', contents='Some content for the markdown file')                                
+        fs.create_file('./workitems/correct/README.md', contents='Some content for the markdown file')
         fs.create_file('./workitems/correct/01_epic/metadata.json',
                        contents='{ \
                                     "title": "Foo bar", \

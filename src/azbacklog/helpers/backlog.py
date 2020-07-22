@@ -164,7 +164,7 @@ class Backlog():
         attachments = self._filter_attachments(files)
         parsed_files = self._parse_work_items(self._filter_work_items(files))
         work_items = self._build_work_items(parsed_files, config)
-        
+
         if args.validate_only is None:
             if repo_type == 'github':
                 self._deploy_github(args, work_items, config, attachments)

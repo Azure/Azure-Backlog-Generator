@@ -178,7 +178,10 @@ class MockedFiles():
     @staticmethod
     def _mock_file_list():
         files = [
+            './workitems/correct/config.json',
+            './workitems/correct/README.md',
             './workitems/correct/01_epic/metadata.json',
+            './workitems/correct/01_epic/attachment.doc',
             './workitems/correct/01_epic/01_feature/metadata.json',
             './workitems/correct/01_epic/01_feature/01_story/metadata.json',
             './workitems/correct/01_epic/01_feature/01_story/01_task/metadata.json',

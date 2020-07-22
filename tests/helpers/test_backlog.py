@@ -57,6 +57,20 @@ def test_get_config(monkeypatch, fs):
     assert "configuration file not valid: there's an error" in str(exc.value)
 
 
+def test_filter_attachments(fs):
+    backlog = helpers.Backlog()
+    result = backlog._filter_attachments(MockedFiles._mock_file_list())
+
+    assert len(result) == 3
+
+
+def test_filter_work_items(fs):
+    backlog = helpers.Backlog()
+    result = backlog._filter_work_items(MockedFiles._mock_file_list())
+
+    assert len(result) == 20
+
+
 def test_parse_work_items(monkeypatch):
     def mock_parse_work_items_returns_file_list(*args, **kwargs):
         return MockedFiles._mock_parsed_file_list()
@@ -372,7 +386,7 @@ def test_deploy_azure(patched_deploy, fs, monkeypatch):
 
 def test_build():
     def mock_gather_work_items_return_file_list(*args, **kwargs):
-        return MockedFiles._mock_file_list()
+        return list(filter(lambda x: x.endswith('metadata.json'), MockedFiles._mock_file_list()))
 
     def mock_get_config_return_config(*args, **kwargs):
         return MockedFiles._mock_config()

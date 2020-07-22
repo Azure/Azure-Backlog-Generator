@@ -30,6 +30,9 @@ class Backlog():
     def _filter_attachments(self, files):
         return list(filter(lambda x: 'metadata.json' not in x, files))
 
+    def _filter_work_items(self, files):
+        return list(filter(lambda x: x.endswith('metadata.json'), files))
+
     def _parse_work_items(self, files):
         parser = Parser()
         parsed_files = parser.parse_file_hierarchy(files)
@@ -159,9 +162,9 @@ class Backlog():
         config = self._get_config(path, repo_type)
         config["_repository_path"] = path
         attachments = self._filter_attachments(files)
-        parsed_files = self._parse_work_items(files)
+        parsed_files = self._parse_work_items(self._filter_work_items(files))
         work_items = self._build_work_items(parsed_files, config)
-
+        
         if args.validate_only is None:
             if repo_type == 'github':
                 self._deploy_github(args, work_items, config, attachments)

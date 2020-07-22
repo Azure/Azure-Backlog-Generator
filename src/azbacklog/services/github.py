@@ -34,13 +34,16 @@ class GitHub():
     def _create_milestone(self, repo, title, desc):
         return repo.create_milestone(title, description=desc)
 
-    def _create_label(self, repo, name):
-        return repo.create_label(name)
+    def _combine_labels(self, config):
+        return list(set().union(config["tags"], config["roles"]))
 
-    def _create_labels(self, repo, names):
+    def _create_label(self, repo, name, color):
+        return repo.create_label(name, color)
+
+    def _create_labels(self, repo, names, colors):
         labels = []
-        for name in names:
-            labels.extend(self._create_label(repo, name))
+        for index, name in enumerate(names):
+            labels.append(self._create_label(repo, name, colors[index]))
 
         return labels
 
@@ -92,7 +95,7 @@ class GitHub():
         self._delete_labels(repo)
 
         print("├── Creating custom labels...")
-        # TODO: Create custom tags
+        self._create_labels(repo, self._combine_labels(config), config["tagcolors"])
 
         project_count = 1
         feature_count = 1
@@ -125,8 +128,8 @@ class GitHub():
                         print(folder_string + "│   └── Creating issue: " + story.title + "...")
                     else:
                         print(folder_string + "│   ├── Creating issue: " + story.title + "...")
-
-                    issue = self._create_issue(repo, milestone, story.title, self._build_description(story.description, story.tasks), [])
+                    
+                    issue = self._create_issue(repo, milestone, story.title, self._build_description(story.description, story.tasks), list(map(lambda t: t.title, story.tags)))
                     issues.append(issue)
 
                     story_count += 1

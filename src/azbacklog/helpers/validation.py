@@ -76,8 +76,6 @@ class Validation():
         allowed_config = list(map(lambda x: x[1:] if x[0] == '#' else x, config_options))
         required_config = list(filter(lambda x: x[0] != '#', config_options))
 
-        print(allowed_config)
-        print(required_config)
         if json is None:
             return (False, f"configuration in '{path}' is empty")
 

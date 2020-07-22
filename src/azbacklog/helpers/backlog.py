@@ -27,6 +27,9 @@ class Backlog():
         else:
             raise ValueError(f"configuration file not valid: {valid_config[1]}")
 
+    def _filter_attachments(self, files):
+        return list(filter(lambda x: 'metadata.json' not in x, files))
+
     def _parse_work_items(self, files):
         parser = Parser()
         parsed_files = parser.parse_file_hierarchy(files)
@@ -135,13 +138,13 @@ class Backlog():
         else:
             return None
 
-    def _deploy_github(self, args, workitems, config):
+    def _deploy_github(self, args, workitems, config, attachments):
         github = services.GitHub(token=args.token)
-        github.deploy(args, workitems, config)
+        github.deploy(args, workitems, config, attachments)
 
-    def _deploy_azure(self, args, workitems, config):
+    def _deploy_azure(self, args, workitems, config, attachments):
         azure = services.AzDevOps(org=args.org, token=args.token)
-        azure.deploy(args, workitems, config)
+        azure.deploy(args, workitems, config, attachments)
 
     def build(self, args):
         if args.validate_only is not None:
@@ -154,11 +157,13 @@ class Backlog():
 
         files = self._gather_work_items(path)
         config = self._get_config(path, repo_type)
+        config["_repository_path"] = path
+        attachments = self._filter_attachments(files)
         parsed_files = self._parse_work_items(files)
         work_items = self._build_work_items(parsed_files, config)
 
         if args.validate_only is None:
             if repo_type == 'github':
-                self._deploy_github(args, work_items, config)
+                self._deploy_github(args, work_items, config, attachments)
             elif repo_type == 'azure':
-                self._deploy_azure(args, work_items, config)
+                self._deploy_azure(args, work_items, config, attachments)

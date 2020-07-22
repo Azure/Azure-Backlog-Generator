@@ -33,7 +33,7 @@ class FileSystem():
 
         fileNames.sort()
         for fileName in fileNames:
-            if fileName.lower() in self.allowed_parent_files:
+            if not (self.parent_path is True and fileName == 'config.json'):
                 files.append(os.path.join(path, fileName))
 
         self.parent_path = False

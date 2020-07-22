@@ -135,7 +135,7 @@ class AzDevOps():
 
         return wit_client.create_work_item(patch, project, wit_type)
 
-    def deploy(self, args, work_items, config):
+    def deploy(self, args, work_items, config, attachments):
         print("┌── Creating project (" + args.org + "/" + args.project + ")...")
         self._create_project(args.project, config["description"])
         project = self._get_project(args.project)

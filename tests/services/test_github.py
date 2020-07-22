@@ -227,6 +227,17 @@ def test_build_description():
                      "\n      This is a description 2"
 
 
+def test_build_initialize_repo(fs, mock_Github):
+    MockedFiles._mock_correct_file_system(fs)
+    
+    gh = GitHub(token='foo')
+    gh.github = mock_Github
+    repo = gh._get_user().create_repo()
+
+    gh._initialize_repo(repo, './workitems/correct', ['./workitems/correct/README.md', './workitems/correct/feature_01/attachment.doc'])
+
+
+
 def test_deploy_with_org(fs):
     MockedFiles._mock_correct_file_system(fs)
 
@@ -236,6 +247,7 @@ def test_deploy_with_org(fs):
     gh = GitHub(token='foo')
     gh._create_org_repo = MagicMock(return_value=mock_return_None)
     gh._create_user_repo = MagicMock(return_value=mock_return_None)
+    gh._initialize_repo = MagicMock(return_value=mock_return_None)
     gh._create_labels = MagicMock(return_value=mock_return_None)
     gh._delete_labels = MagicMock(return_value=mock_return_None)
     gh._create_project = MagicMock(return_value=mock_return_None)
@@ -247,6 +259,7 @@ def test_deploy_with_org(fs):
 
     backlog = Backlog()
     config = backlog._get_config('workitems/correct', 'github')
+    config["_repository_path"] = 'workitems/correct'
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = argparse.Namespace()
@@ -255,7 +268,7 @@ def test_deploy_with_org(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    gh.deploy(args, work_items, config)
+    gh.deploy(args, work_items, config, [])
     gh._create_org_repo.assert_called_with('testOrg', 'testProject', 'Sample description')
 
     gh._delete_labels.assert_called()
@@ -275,6 +288,7 @@ def test_deploy_with_repo(fs):
     gh = GitHub(token='foo')
     gh._create_org_repo = MagicMock(return_value=mock_return_None)
     gh._create_user_repo = MagicMock(return_value=mock_return_None)
+    gh._initialize_repo = MagicMock(return_value=mock_return_None)
     gh._create_labels = MagicMock(return_value=mock_return_None)
     gh._delete_labels = MagicMock(return_value=mock_return_None)
     gh._create_project = MagicMock(return_value=mock_return_None)
@@ -286,6 +300,7 @@ def test_deploy_with_repo(fs):
 
     backlog = Backlog()
     config = backlog._get_config('workitems/correct', 'github')
+    config["_repository_path"] = 'workitems/correct'
     work_items = backlog._build_work_items(MockedFiles._mock_parsed_file_list(), config)
 
     args = argparse.Namespace()
@@ -294,7 +309,7 @@ def test_deploy_with_repo(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    gh.deploy(args, work_items, config)
+    gh.deploy(args, work_items, config, [])
     gh._create_user_repo.assert_called_with('testProject', 'Sample description')
 
     gh._delete_labels.assert_called()

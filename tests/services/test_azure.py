@@ -246,7 +246,7 @@ def test_deploy(fs):
     args.project = 'testProject'
     args.backlog = 'correct'
 
-    az.deploy(args, work_items, config)
+    az.deploy(args, work_items, config, [])
 
     az._create_project.assert_called_with('testProject', 'Sample description')
     az._enable_epics.assert_called()

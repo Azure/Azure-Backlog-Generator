@@ -107,57 +107,140 @@ The backlog items are arranged in a collection of epics, features, stories and t
 | User Story   | Issue         |
 | Task         | Checklist in the body of the Issue |
 
-Tags will be created and applied in both platforms (in GitHub as _Labels_).
+Excluding the specific git action of 'tagging' a commit, _tags_ have differing nomenclature between Azure DevOps and GitHub. In Azure DevOps, tags are associated with work items whereas, in GitHub, the terminology for tags is "labels." That being the case, and based on the previous table, tags will be associated with all work item types in Azure DevOps, but will only be associated with issues in GitHub. 
+
+AzBacklog will create tags, as applicable, in both platforms--Azure DevOps and GitHub.
+
+## Creating Custom Backlogs
+Contributors are welcome to create new backlogs that others may find useful for repititive actions. The following sections will explain the process.
 
 ### Directory Structure
 The directory structure follows a very simplistic heirarchy to fascilitate dependency creation and increase efficiency by minimizing overhead:
 ```
 .
-├── src                (source code)
-├── tests              (unit tests)
+├── src                         (source code)
+├── tests                       (unit tests)
 └── workitems
-    ├── 01_SampleEpic1
-    │   ├── metadata.json
-    │   └── 01_SampleFeature1
-    │       ├── metadata.json
-    │       └── 01_SampleStory1
-    │           ├── metadata.json
-    │           ├── 01_SampleTask1
-    │           │   └── metadata.json
-    │           └── 02_SampleTask2
-    │               └── metadata.json
-    └── 02_SampleEpic2
-        ├── metadata.json
-        ├── 01_SampleFeature1
+    └── backlog_type
+        ├── config.json         (specific backlog configuration)
+        ├── README.md           (optional. README.md for repo initialization)
+        ├── 01_SampleEpic1
         │   ├── metadata.json
-        │   └── 01_SampleStory1
+        │   └── 01_SampleFeature1
         │       ├── metadata.json
-        │       └── 01_SampleTask1
-        │           └── metadata.json
-        └── 02_SampleFeature2
+        │       └── 01_SampleStory1
+        │           ├── metadata.json
+        │           ├── 01_SampleTask1
+        │            │   └── metadata.json
+        │            └── 02_SampleTask2
+        │                └── metadata.json
+        └── 02_SampleEpic2
             ├── metadata.json
-            └── 01_SampleStory1
+            ├── 01_SampleFeature1
+            │   ├── metadata.json
+            │   └── 01_SampleStory1
+            │       ├── metadata.json
+            │       └── 01_SampleTask1
+            │           └── metadata.json
+            └── 02_SampleFeature2
                 ├── metadata.json
-                ├── 01_SampleTask1
-                │   └── metadata.json
-                └── 02_SampleTask2
-                    └── metadata.json
+                └── 01_SampleStory1
+                    ├── metadata.json
+                    ├── 01_SampleTask1
+                    │   └── metadata.json
+                    └── 02_SampleTask2
+                        └── metadata.json
 
 ```
-The heirarchy above follows the structure of `Epic -> Feature -> User Story -> Task`. Each folder will contain a `metadata.json` file that follows the *Work Item Format* below and child items. Task folders will not contain any child work items and should only contain its metadata.
+The heirarchy above follows the structure of `Epic -> Feature -> User Story -> Task`. Each backlog type must contain a `config.json` that directs the engine's creation process. Each folder will contain a `metadata.json` file that follows the *Work Item Format* below and child items. Task folders will not contain any child work items and should only contain its metadata. Finally, the top folder for each backlog type may contain a `README.md` that will be used upon repository initialization.
+
+### Config.json Format
+The format of the backlog's `config.json` file is the following:
+```json
+{
+    "description": "My backlog",
+    "tags" : [
+        "Strategy",
+        "Plan",
+        "Ready",
+        "Innovation",
+        "Migration",
+        "First Workload",
+        "First Host",
+        "Workload Template"
+    ],
+    "roles": [
+        "Infra",
+        "AppDev",
+        "Data",
+        "Security"
+    ],
+    "tagcolors": [
+        "d73a4a",
+        "0075ca",
+        "cfd3d7",
+        "a2eeef",
+        "7057ff",
+        "008672",
+        "e4e669",
+        "d876e3",
+        "39db61",
+        "f2639a",
+        "59b5d6",
+        "12487a"
+    ]
+}
+```
+
+#### OPTIONS ####
+**description**  
+_Required._  
+A simple, single-line description of the backlog.
+
+**tags**  
+_Required._  
+Allowed tags that may be used for the work items. Tags can be used to group similar work item types.
+
+**roles**  
+_Required._  
+Allowed roles that may be used for the work items. Roles can be used to easily identify team individuals who should be assigned to the work item. 
+
+**tagcolors**  
+_Optional._  
+Hexidecimal colors to be used for each tag and role. Standard colors can be used for easier identification based on business process. 
+
+NOTES: 1) The total number of `tagcolors` must equal the combined sum of the `tags` and `roles`. 2) `tagcolors` are not required when deploying to Azure DevOps, but are required for GitHub deployments.
+
 
 ### Work Item Format
-The format of the `metadata.json` file is the following:
+The format of a work item's `metadata.json` file is the following:
 ```json
 {
     "title": "Work Item Title",
     "description": "Some description of the work item",
-    "tag": ["Strategy | Plan | Ready | Innovation | Migration | First Workload | First Host | Workload Template"],
-    "roles": ["Infra | AppDev | Data | Security"]
+    "tag": ["Strategy | Plan | Ready"],
+    "roles": ["AppDev"]
 }
 ```
 
-**NOTE:** _Tags_ and _Roles_  **must** be those provided in the respective list of the corresponding process. The available lists are found with the [backlog descriptions](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#backlog-descriptions).
+#### OPTIONS ####
+**title**  
+_Required._  
+A simple, single-line title of the work item.
+
+**description**  
+_Required._  
+The content of the work item.
+
+**tags**  
+_Required._  
+The tag(s) for the specific work item.
+
+**roles**  
+_Required._  
+The role(s) for the specific work item.
+
+**NOTE: _Tags_ and _Roles_  must be those provided in the respective list of the corresponding process. The available lists are found with the [backlog descriptions](https://github.com/a11smiles/Azure-Backlog-Generator/blob/master/backlogs.md#backlog-descriptions).**
 
 ## Contributing
 Your experience and feedback are valuable and, therefore, your contributions are welcomed. Please create necessary issues and, optionally, pull requests for your feedback or contributions. Please adhere to the technical guidelines above when contributing to the source code.

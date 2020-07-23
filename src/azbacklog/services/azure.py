@@ -140,7 +140,8 @@ class AzDevOps():
         return wit_client.create_work_item(patch, project, wit_type)
 
     def _initialize_repo(self, org, project, path, attachments):
-        readme_path = list(filter(lambda x: x.lower() == (path + '/README.md').lower(), attachments))
+        search_path = (path + '/README.md').lower().replace('\\', '/')
+        readme_path = list(filter(lambda x: x.replace('\\', '/').lower() == search_path, attachments))
 
         if len(readme_path) == 1:
             fs = helpers.FileSystem()

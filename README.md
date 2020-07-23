@@ -28,6 +28,8 @@ First, install the `azbacklog` package:
 pip install azbacklog
 ```
 
+> **NOTE:** The library installs additional data files (the workitems) into a artifacts folder that your user may not have access to under the normal user permissions. MAC users using Homebrew may especially have this issue. In this case, instead of using `sudo` to install the package, use the `--user` to install the package into the localized user's libary (ex: `pip install azbacklog --user`). Finally, by installing to the localized user's path, you may need to add the path's binary folder to Python's search path.
+
 ### Create a Backlog
 To create a backlog:
 ```

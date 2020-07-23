@@ -9,16 +9,26 @@ class FileSystem():
         'readme.md'
     ]
 
+    def _compiled_paths(self):
+        paths = []
+        paths.append('./workitems/')
+        paths.append(os.path.join(sys.prefix, 'workitems/'))
+        for path in sys.path:
+            if path.lower().endswith('/bin'):
+                paths.append(os.path.join(path[0:-4] + '/workitems/'))
+            else:
+                paths.append(os.path.join(path + '/workitems/'))
+
+        return paths
+
     @staticmethod
     def find_work_items():
-        developed_path = './workitems/'
-        installed_path = os.path.join(sys.prefix, 'workitems/')
-        if os.path.exists(developed_path):
-            return developed_path
-        elif os.path.exists(installed_path):
-            return installed_path
-        else:
-            raise FileNotFoundError("'workitems' folder not found")
+        fs = FileSystem()
+        for path in fs._compiled_paths():
+            if os.path.exists(path):
+                return path
+        
+        raise FileNotFoundError("'workitems' folder not found")
 
     def get_files(self, path):
         files = []

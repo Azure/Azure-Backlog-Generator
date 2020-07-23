@@ -27,7 +27,7 @@ class FileSystem():
         for path in fs._compiled_paths():
             if os.path.exists(path):
                 return path
-        
+
         raise FileNotFoundError("'workitems' folder not found")
 
     def get_files(self, path):
